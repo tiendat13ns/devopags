@@ -61,7 +61,7 @@ body {
 }
 
 :root {
-  --background: #ffffff;
+  --background: #fdfaff;
   --foreground: #362f3b;
   --card: #ffffff;
   --card-foreground: #251b2b;
@@ -151,6 +151,19 @@ body {
   --devops-grid: rgba(192, 132, 252, 0.035);
   --devops-network: #a855f7;
   --devops-node: #c084fc;
+}
+
+.article-reading-bg {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(circle at 88% 8%, rgba(157, 78, 221, 0.08), transparent 34rem),
+    radial-gradient(circle at 6% 62%, rgba(123, 44, 191, 0.045), transparent 30rem);
+}
+
+.dark .article-reading-bg {
+  background-image:
+    radial-gradient(circle at 88% 8%, rgba(199, 125, 255, 0.08), transparent 34rem),
+    radial-gradient(circle at 6% 62%, rgba(123, 44, 191, 0.07), transparent 30rem);
 }
 
 @layer base {

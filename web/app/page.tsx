@@ -15,11 +15,11 @@ const posts = [
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground transition-colors duration-300">
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground transition-colors duration-300">
       <DevOpsBackdrop />
       <SiteHeader />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
         <section id="top" className="grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-20 lg:py-20">
           <div className="max-w-2xl border-l-2 border-primary pl-6 sm:pl-8">
             <p className="font-mono text-sm font-semibold text-primary">$ whoami</p>

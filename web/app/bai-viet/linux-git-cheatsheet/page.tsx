@@ -191,10 +191,10 @@ const tableOfContents = [
 
 export default function LinuxGitCheatsheet() {
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <main className="article-reading-bg min-h-screen text-foreground transition-colors duration-300">
       <SiteHeader />
 
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,760px)_1fr] lg:py-14">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
         <aside className="hidden lg:block">
           <nav className="sticky top-24 border-l border-border pl-5" aria-label="Mục lục bài viết">
             <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.13em] text-ink">Trong bài này</p>
@@ -320,18 +320,6 @@ git push -u origin docs/linux-cheatsheet`}</code></pre>
           </section>
         </article>
 
-        <aside className="hidden xl:block">
-          <div className="sticky top-24 rounded-2xl border border-border bg-surface p-5">
-            <p className="text-xs font-extrabold uppercase tracking-[0.13em] text-primary">Ghi chú cá nhân</p>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Đây là những lệnh mình thấy hữu ích trong quá trình học và thực tập, không phải danh sách đầy đủ của Linux hay Git.
-            </p>
-            <div className="mt-5 border-t border-border pt-4">
-              <p className="text-sm font-bold text-ink">Tiến Đạt</p>
-              <p className="mt-1 text-xs text-muted-foreground">DevOps Intern · DevOpags</p>
-            </div>
-          </div>
-        </aside>
       </div>
 
       <footer className="border-t border-border bg-card">
