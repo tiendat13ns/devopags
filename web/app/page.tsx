@@ -48,22 +48,25 @@ const topics = [
 
 const notes = [
   {
-    category: 'Linux',
-    title: 'Process, service và daemon khác nhau như thế nào?',
-    description: 'Một bản đồ ngắn để biết mình nên kiểm tra gì khi ứng dụng không chạy.',
-    date: '12 phút đọc',
+    category: 'Linux + Git',
+    title: 'Linux & Git Cheatsheet cho DevOps Intern',
+    description: 'Các lệnh thường dùng, được nhóm theo tình huống để mở ra là tra được ngay.',
+    date: '15 phút đọc',
+    href: '/bai-viet/linux-git-cheatsheet',
   },
   {
     category: 'Networking',
     title: 'Điều gì xảy ra khi bạn gõ một URL?',
     description: 'Lần theo DNS, TCP, TLS và HTTP bằng góc nhìn của một DevOps intern.',
     date: '9 phút đọc',
+    href: '#bai-viet',
   },
   {
     category: 'Docker',
     title: 'Vì sao container của tôi vừa chạy đã dừng?',
     description: 'Hiểu PID 1, foreground process và cách đọc container logs.',
     date: '7 phút đọc',
+    href: '#bai-viet',
   },
 ];
 
@@ -226,7 +229,7 @@ export default function Home() {
 
           <div className="mt-10 grid gap-5 lg:grid-cols-3">
             {notes.map((note, index) => (
-              <article className="group flex min-h-[270px] flex-col rounded-2xl border border-border bg-white p-6 transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_18px_45px_-30px_rgba(90,24,154,0.5)]" key={note.title}>
+              <a className="group flex min-h-[270px] flex-col rounded-2xl border border-border bg-white p-6 transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_18px_45px_-30px_rgba(90,24,154,0.5)]" href={note.href} key={note.title}>
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="rounded-full bg-primary-soft px-2.5 py-1 text-primary-dark">{note.category}</span>
                   <span className="font-mono text-muted-foreground">0{index + 1}</span>
@@ -239,7 +242,7 @@ export default function Home() {
                     <ArrowRight size={14} />
                   </span>
                 </div>
-              </article>
+              </a>
             ))}
           </div>
         </div>
