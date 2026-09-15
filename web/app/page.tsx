@@ -182,14 +182,14 @@ function DevOpsBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
       <div
-        className="absolute inset-0"
+        className="devops-aurora-motion absolute inset-[-4%]"
         style={{
           backgroundImage:
             'radial-gradient(circle at 18% 12%, rgba(147, 51, 234, 0.22), transparent 30%), radial-gradient(circle at 82% 40%, rgba(88, 28, 135, 0.2), transparent 34%), linear-gradient(135deg, #0d0715 0%, #12091f 50%, #09050f 100%)',
         }}
       />
       <div
-        className="absolute inset-0 opacity-30"
+        className="devops-grid-motion absolute inset-[-64px] opacity-30"
         style={{
           backgroundImage:
             'linear-gradient(rgba(192,132,252,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(192,132,252,0.035) 1px, transparent 1px)',
@@ -198,7 +198,7 @@ function DevOpsBackdrop() {
         }}
       />
 
-      <svg className="absolute inset-0 h-full w-full opacity-60" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <svg className="devops-network-motion absolute inset-0 h-full w-full opacity-60" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
         <g fill="none" stroke="#a855f7" strokeWidth="1">
           <path opacity="0.12" d="M64 172 188 124l96 82 132-74 96 94 128-50 124 97" />
           <path opacity="0.09" d="M884 126 1008 196l112-56 78 116 152-54" />
@@ -206,22 +206,36 @@ function DevOpsBackdrop() {
           <path opacity="0.08" d="M864 620 988 524l114 90 92-52 170 106" />
         </g>
         <g fill="#c084fc">
-          {[['64','172'],['188','124'],['284','206'],['416','132'],['512','226'],['640','176'],['764','273'],['884','126'],['1008','196'],['1120','140'],['1198','256'],['1350','202'],['76','616'],['210','530'],['326','622'],['472','556'],['602','646'],['720','608'],['864','620'],['988','524'],['1102','614'],['1194','562'],['1364','668']].map(([cx, cy]) => (
-            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2" opacity="0.18" />
+          {[['64','172'],['188','124'],['284','206'],['416','132'],['512','226'],['640','176'],['764','273'],['884','126'],['1008','196'],['1120','140'],['1198','256'],['1350','202'],['76','616'],['210','530'],['326','622'],['472','556'],['602','646'],['720','608'],['864','620'],['988','524'],['1102','614'],['1194','562'],['1364','668']].map(([cx, cy], index) => (
+            <circle
+              className="devops-node-motion"
+              key={`${cx}-${cy}`}
+              cx={cx}
+              cy={cy}
+              r="2"
+              style={{ animationDelay: `${index * -0.37}s` }}
+            />
           ))}
         </g>
       </svg>
 
-      <CommandLine className="left-[4%] top-[13%] -rotate-6" text="$ ssh deploy@10.0.0.12" />
-      <CommandLine className="right-[5%] top-[18%] rotate-3" text="kubectl get pods -A" />
-      <CommandLine className="left-[2%] top-[43%] rotate-2" text="git log --oneline --graph" />
-      <CommandLine className="right-[3%] top-[49%] -rotate-3" text="docker compose up -d" />
-      <CommandLine className="left-[7%] top-[72%] -rotate-2" text="journalctl -u nginx -f" />
-      <CommandLine className="right-[8%] top-[80%] rotate-2" text="terraform plan" />
+      <CommandLine className="left-[4%] top-[13%] -rotate-6" delay="-2s" text="$ ssh deploy@10.0.0.12" />
+      <CommandLine className="right-[5%] top-[18%] rotate-3" delay="-8s" text="kubectl get pods -A" />
+      <CommandLine className="left-[2%] top-[43%] rotate-2" delay="-5s" text="git log --oneline --graph" />
+      <CommandLine className="right-[3%] top-[49%] -rotate-3" delay="-11s" text="docker compose up -d" />
+      <CommandLine className="left-[7%] top-[72%] -rotate-2" delay="-7s" text="journalctl -u nginx -f" />
+      <CommandLine className="right-[8%] top-[80%] rotate-2" delay="-14s" text="terraform plan" />
     </div>
   );
 }
 
-function CommandLine({ className, text }: { className: string; text: string }) {
-  return <span className={`absolute hidden whitespace-nowrap font-mono text-xs text-[#d8a7ff]/10 sm:block ${className}`}>{text}</span>;
+function CommandLine({ className, delay, text }: { className: string; delay: string; text: string }) {
+  return (
+    <span
+      className={`devops-command-motion absolute hidden whitespace-nowrap font-mono text-xs text-[#d8a7ff]/10 sm:block ${className}`}
+      style={{ animationDelay: delay }}
+    >
+      {text}
+    </span>
+  );
 }

@@ -262,7 +262,64 @@ body {
   font-weight: 700;
 }
 
+@keyframes devops-aurora-drift {
+  0%, 100% { transform: translate3d(-1%, 0, 0) scale(1); }
+  50% { transform: translate3d(1.5%, -1%, 0) scale(1.04); }
+}
+
+@keyframes devops-grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 64px 64px; }
+}
+
+@keyframes devops-network-drift {
+  0%, 100% { transform: translate3d(-6px, 2px, 0) scale(1); }
+  50% { transform: translate3d(8px, -8px, 0) scale(1.012); }
+}
+
+@keyframes devops-node-pulse {
+  0%, 100% { opacity: 0.12; }
+  50% { opacity: 0.58; }
+}
+
+@keyframes devops-command-float {
+  0%, 100% { translate: 0 0; opacity: 0.07; }
+  50% { translate: 10px -10px; opacity: 0.16; }
+}
+
+.devops-aurora-motion {
+  animation: devops-aurora-drift 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.devops-grid-motion {
+  animation: devops-grid-drift 28s linear infinite;
+  will-change: background-position;
+}
+
+.devops-network-motion {
+  animation: devops-network-drift 24s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.devops-node-motion {
+  animation: devops-node-pulse 4.8s ease-in-out infinite;
+}
+
+.devops-command-motion {
+  animation: devops-command-float 17s ease-in-out infinite;
+  will-change: translate, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
+  .devops-aurora-motion,
+  .devops-grid-motion,
+  .devops-network-motion,
+  .devops-node-motion,
+  .devops-command-motion {
+    animation: none !important;
+  }
 }
