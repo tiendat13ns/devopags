@@ -4,6 +4,22 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 const posts = [
   {
+    title: 'Linux là gì và tại sao Linux cần thiết cho DevOps?',
+    description: 'Hiểu Linux từ kernel, distribution đến vai trò của Linux trong server, container, cloud và công việc DevOps hằng ngày.',
+    date: '16/09/2026',
+    readTime: '9 phút đọc',
+    tags: ['Linux', 'DevOps', 'Cơ bản'],
+    href: '/bai-viet/linux-la-gi',
+  },
+  {
+    title: 'Docker là gì và tại sao nên dùng Docker?',
+    description: 'Tìm hiểu image, container, registry và cách Docker giúp môi trường phát triển, CI và production nhất quán hơn.',
+    date: '16/09/2026',
+    readTime: '10 phút đọc',
+    tags: ['Docker', 'Container', 'DevOps'],
+    href: '/bai-viet/docker-la-gi',
+  },
+  {
     title: 'Linux & Git Cheatsheet cho DevOps Intern',
     description: 'Các lệnh thường dùng trên server và workflow Git hằng ngày, được nhóm lại để tra cứu nhanh.',
     date: '15/09/2026',
@@ -44,7 +60,7 @@ export default function Home() {
           <section id="bai-viet" aria-labelledby="posts-title">
             <SectionTitle id="posts-title" label="Bài viết mới" command="ls ./posts" />
 
-            <div className="mt-5">
+            <div className="mt-5 space-y-4">
               {posts.map((post) => (
                 <article key={post.href}>
                   <Link
@@ -94,6 +110,7 @@ export default function Home() {
               <div className="mt-3 flex flex-wrap gap-2">
                 <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Linux</a>
                 <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Git</a>
+                <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Docker</a>
               </div>
             </section>
 
