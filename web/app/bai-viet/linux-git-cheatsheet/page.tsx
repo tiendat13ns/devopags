@@ -1,11 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
-  ArrowLeft,
-  BookOpen,
-  CalendarDays,
   ChevronRight,
-  Clock,
   ExternalLink,
   GitBranch,
   GitFork,
@@ -196,32 +192,6 @@ export default function LinuxGitCheatsheet() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <SiteHeader />
-
-      <div className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-          <Link className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark" href="/">
-            <ArrowLeft size={16} /> Trang chủ
-          </Link>
-          <div className="mt-7 max-w-4xl">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span className="rounded-full bg-primary-soft px-3 py-1.5 text-primary-dark">Linux</span>
-              <span className="rounded-full bg-primary-soft px-3 py-1.5 text-primary-dark">Git</span>
-              <span className="rounded-full border border-border bg-white px-3 py-1.5 text-muted-foreground">Cheatsheet #01</span>
-            </div>
-            <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.08] tracking-[-0.045em] text-ink sm:text-5xl lg:text-6xl">
-              Linux &amp; Git Cheatsheet cho DevOps Intern
-            </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
-              Những lệnh mình thường cần khi thao tác trên server và làm việc với source code — được nhóm theo tình huống để mở ra là tra được ngay.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-2"><CalendarDays size={15} /> 15/09/2026</span>
-              <span className="inline-flex items-center gap-2"><Clock size={15} /> 15 phút đọc</span>
-              <span className="inline-flex items-center gap-2"><BookOpen size={15} /> Cơ bản</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,760px)_1fr] lg:py-14">
         <aside className="hidden lg:block">
