@@ -57,6 +57,7 @@
 
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 300ms ease, color 300ms ease;
 }
 
 :root {
@@ -99,6 +100,11 @@ body {
   --code: #21172a;
   --code-border: #3c2948;
   --code-foreground: #f7f0fb;
+  --devops-glow-primary: rgba(123, 44, 191, 0.13);
+  --devops-glow-secondary: rgba(157, 78, 221, 0.1);
+  --devops-grid: rgba(123, 44, 191, 0.055);
+  --devops-network: #7b2cbf;
+  --devops-node: #9d4edd;
 }
 
 .dark {
@@ -140,6 +146,11 @@ body {
   --code: #140e19;
   --code-border: #473553;
   --code-foreground: #f7f0fb;
+  --devops-glow-primary: rgba(147, 51, 234, 0.22);
+  --devops-glow-secondary: rgba(88, 28, 135, 0.2);
+  --devops-grid: rgba(192, 132, 252, 0.035);
+  --devops-network: #a855f7;
+  --devops-node: #c084fc;
 }
 
 @layer base {

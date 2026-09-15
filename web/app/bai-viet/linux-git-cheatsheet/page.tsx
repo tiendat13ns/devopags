@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
   ChevronRight,
   ExternalLink,
@@ -190,7 +191,7 @@ const tableOfContents = [
 
 export default function LinuxGitCheatsheet() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <SiteHeader />
 
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,760px)_1fr] lg:py-14">
@@ -274,7 +275,7 @@ export default function LinuxGitCheatsheet() {
                   <span className="font-mono text-xs font-bold text-primary">{number}</span>
                   <p className="mt-2 font-bold text-ink">{title}</p>
                   <p className="mt-1 text-sm leading-5 text-muted-foreground">{description}</p>
-                  {number !== '03' && <ChevronRight className="absolute -right-2.5 top-1/2 hidden -translate-y-1/2 rounded-full bg-white text-primary sm:block" size={20} />}
+                  {number !== '03' && <ChevronRight className="absolute -right-2.5 top-1/2 hidden -translate-y-1/2 rounded-full bg-card text-primary sm:block" size={20} />}
                 </div>
               ))}
             </div>
@@ -333,7 +334,7 @@ git push -u origin docs/linux-cheatsheet`}</code></pre>
         </aside>
       </div>
 
-      <footer className="border-t border-border bg-white">
+      <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div className="flex items-center gap-2 font-bold text-ink"><Terminal size={16} className="text-primary" /> DevOpags</div>
           <p>Học đến đâu, thực hành và giải thích lại đến đó.</p>
@@ -353,7 +354,7 @@ function CommandSection({ id, title, description, commands }: { id: string; titl
       <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
       <div className="mt-5 overflow-hidden rounded-xl border border-border">
         {commands.map((item) => (
-          <div className="command-row grid gap-2 border-b border-border bg-white p-4 last:border-b-0 sm:grid-cols-[minmax(220px,0.9fr)_1.1fr] sm:gap-5 sm:px-5" key={item.command}>
+          <div className="command-row grid gap-2 border-b border-border bg-card p-4 last:border-b-0 sm:grid-cols-[minmax(220px,0.9fr)_1.1fr] sm:gap-5 sm:px-5" key={item.command}>
             <code className="command-code">{item.command}</code>
             <div>
               <p className="text-sm leading-6 text-foreground">{item.description}</p>
@@ -378,7 +379,7 @@ function ReferenceLink({ href, label }: { href: string; label: string }) {
 
 function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link className="group flex items-center gap-3" href="/" aria-label="DevOpags - Trang chủ">
           <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-[0_8px_24px_-10px_rgba(123,44,191,0.8)] transition-transform group-hover:-rotate-3">
@@ -387,13 +388,13 @@ function SiteHeader() {
           <span className="text-[1.05rem] font-bold tracking-[-0.025em]">DevOp<span className="text-primary">ags</span></span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
-          <Link className="transition-colors hover:text-primary" href="/#lo-trinh">Lộ trình</Link>
           <Link className="text-primary" href="/#bai-viet" aria-current="page">Bài viết</Link>
+          <Link className="transition-colors hover:text-primary" href="/#chu-de">Chủ đề</Link>
           <Link className="transition-colors hover:text-primary" href="/#gioi-thieu">Về mình</Link>
         </nav>
         <div className="flex items-center gap-2">
           <a
-            className="grid size-9 place-items-center rounded-lg border border-border bg-white text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
+            className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
             href="https://github.com/tiendat13ns/devopags"
             target="_blank"
             rel="noreferrer"
@@ -404,11 +405,12 @@ function SiteHeader() {
               <path d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.71.4.08.55-.17.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.53-.01-.54.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.21-3.64-.91-3.64-4.02 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.37 7.37 0 0 1 8 3.91c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.29.82 2.19 0 3.12-1.87 3.81-3.65 4.02.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.23 0 .22.15.47.55.39A8.02 8.02 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" />
             </svg>
           </a>
+          <ThemeToggle />
           <details className="relative md:hidden">
-            <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border border-border bg-white [&::-webkit-details-marker]:hidden" aria-label="Mở menu"><Menu size={18} /></summary>
-            <nav className="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-xl border border-border bg-white p-2 text-sm font-medium shadow-xl" aria-label="Điều hướng di động">
-              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#lo-trinh">Lộ trình</Link>
+            <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border border-border bg-card [&::-webkit-details-marker]:hidden" aria-label="Mở menu"><Menu size={18} /></summary>
+            <nav className="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium shadow-xl" aria-label="Điều hướng di động">
               <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/#bai-viet">Bài viết</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#chu-de">Chủ đề</Link>
               <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#gioi-thieu">Về mình</Link>
             </nav>
           </details>
