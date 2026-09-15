@@ -92,13 +92,16 @@ export default function Home() {
 
           <div className="flex items-center gap-2">
             <a
-              className="hidden h-9 items-center gap-2 rounded-lg border border-border bg-white px-3.5 text-sm font-semibold transition-colors hover:border-primary/30 hover:bg-accent sm:flex"
+              className="grid size-9 place-items-center rounded-lg border border-border bg-white text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
               href="https://github.com/tiendat13ns/devopags"
               target="_blank"
               rel="noreferrer"
+              aria-label="Mở GitHub"
+              title="GitHub"
             >
-              <GitFork size={16} />
-              GitHub
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="size-[18px] fill-current">
+                <path d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.71.4.08.55-.17.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.53-.01-.54.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.21-3.64-.91-3.64-4.02 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.37 7.37 0 0 1 8 3.91c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.29.82 2.19 0 3.12-1.87 3.81-3.65 4.02.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.23 0 .22.15.47.55.39A8.02 8.02 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" />
+              </svg>
             </a>
             <details className="relative md:hidden">
               <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border border-border bg-white [&::-webkit-details-marker]:hidden" aria-label="Mở menu">
