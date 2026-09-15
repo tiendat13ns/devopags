@@ -132,7 +132,7 @@ function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <a className="group flex items-center gap-3" href="#top" aria-label="DevOpags - Trang chủ">
-          <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[0_8px_28px_-10px_rgba(168,85,247,0.9)] transition-transform group-hover:-rotate-3">
+          <span className="brand-mark grid size-9 place-items-center rounded-xl transition-transform group-hover:-rotate-3">
             <Terminal size={19} strokeWidth={2.2} />
           </span>
           <span className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">DevOp<span className="text-primary">ags</span></span>

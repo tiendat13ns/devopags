@@ -105,6 +105,11 @@ body {
   --devops-grid: rgba(123, 44, 191, 0.055);
   --devops-network: #7b2cbf;
   --devops-node: #9d4edd;
+  --brand-gradient-start: #5a189a;
+  --brand-gradient-mid: #7b2cbf;
+  --brand-gradient-end: #c77dff;
+  --brand-mark-border: rgba(90, 24, 154, 0.16);
+  --brand-mark-shadow: rgba(90, 24, 154, 0.3);
 }
 
 .dark {
@@ -151,6 +156,23 @@ body {
   --devops-grid: rgba(192, 132, 252, 0.035);
   --devops-network: #a855f7;
   --devops-node: #c084fc;
+  --brand-gradient-start: #3c096c;
+  --brand-gradient-mid: #5a189a;
+  --brand-gradient-end: #9d4edd;
+  --brand-mark-border: rgba(224, 170, 255, 0.2);
+  --brand-mark-shadow: rgba(123, 44, 191, 0.42);
+}
+
+.brand-mark {
+  color: #ffffff;
+  border: 1px solid var(--brand-mark-border);
+  background: linear-gradient(
+    135deg,
+    var(--brand-gradient-start) 0%,
+    var(--brand-gradient-mid) 56%,
+    var(--brand-gradient-end) 100%
+  );
+  box-shadow: 0 10px 26px -12px var(--brand-mark-shadow);
 }
 
 .article-reading-bg {
