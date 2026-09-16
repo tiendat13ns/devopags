@@ -6,30 +6,30 @@ import { ThemeToggle } from '@/components/theme-toggle';
 type TocItem = {
   href: string;
   label: string;
+  active?: boolean;
 };
 
-export function ArticleShell({ children, toc }: { children: ReactNode; toc: TocItem[] }) {
+export type TocGroup = {
+  label: string;
+  items: TocItem[];
+};
+
+export function ArticleShell({
+  children,
+  toc,
+  theme = 'default',
+}: {
+  children: ReactNode;
+  toc: TocGroup[];
+  theme?: 'default' | 'docker';
+}) {
   return (
-    <main className="article-reading-bg min-h-screen text-foreground transition-colors duration-300">
+    <main className={`article-reading-bg min-h-screen text-foreground transition-colors duration-300 ${theme === 'docker' ? 'docker-article-theme' : ''}`}>
       <ArticleHeader />
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
         <aside className="hidden lg:block">
-          <nav className="sticky top-24 border-l border-border pl-5" aria-label="Mục lục bài viết">
-            <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.13em] text-ink">Trong bài này</p>
-            <ol className="space-y-1.5">
-              {toc.map((item, index) => (
-                <li key={item.href}>
-                  <a
-                    className={`block py-1 text-sm leading-5 transition-colors hover:text-primary ${index === 0 ? 'font-bold text-ink' : 'text-muted-foreground'}`}
-                    href={item.href}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <ArticleToc groups={toc} />
         </aside>
 
         <article className="min-w-0">{children}</article>
@@ -39,12 +39,39 @@ export function ArticleShell({ children, toc }: { children: ReactNode; toc: TocI
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div className="flex items-center gap-2 font-bold text-ink"><Terminal size={16} className="text-primary" /> DevOpags</div>
           <p>Học đến đâu, thực hành và giải thích lại đến đó.</p>
-          <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns/devopags" target="_blank" rel="noreferrer">
+          <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">
             <GitFork size={15} /> Mã nguồn mở
           </a>
         </div>
       </footer>
     </main>
+  );
+}
+
+export function ArticleToc({ groups }: { groups: TocGroup[] }) {
+  return (
+    <nav className="article-toc sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border border-border bg-card/55 p-5 backdrop-blur-sm" aria-label="Mục lục bài viết">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-primary">Mục lục bài viết</p>
+      <div className="mt-4 space-y-6">
+        {groups.map((group) => (
+          <section key={group.label}>
+            <h2 className="text-[0.72rem] font-medium uppercase leading-5 tracking-[0.08em] text-primary/75">{group.label}</h2>
+            <ol className="mt-2 space-y-1">
+              {group.items.map((item) => (
+                <li key={item.href}>
+                  <a
+                    className={`block border-l-2 py-1.5 pl-3 text-sm font-semibold leading-5 transition-colors ${item.active ? 'border-primary text-primary' : 'border-transparent text-ink hover:border-primary/45 hover:text-primary'}`}
+                    href={item.href}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -135,7 +162,7 @@ function ArticleHeader() {
         <div className="flex items-center gap-2">
           <a
             className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
-            href="https://github.com/tiendat13ns/devopags"
+            href="https://github.com/tiendat13ns"
             target="_blank"
             rel="noreferrer"
             aria-label="Mở GitHub"

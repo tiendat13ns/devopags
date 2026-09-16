@@ -8,13 +8,31 @@ export const metadata: Metadata = {
 };
 
 const toc = [
-  { href: '#linux-la-gi', label: 'Linux là gì?' },
-  { href: '#kernel-va-distro', label: 'Kernel và distribution' },
-  { href: '#vi-sao-devops-can-linux', label: 'Vì sao DevOps cần Linux?' },
-  { href: '#linux-xuat-hien-o-dau', label: 'Linux xuất hiện ở đâu?' },
-  { href: '#tu-duy-khi-hoc-linux', label: 'Tư duy khi học Linux' },
-  { href: '#bat-dau-tu-dau', label: 'Bắt đầu từ đâu?' },
-  { href: '#references', label: 'Tài liệu tham khảo' },
+  {
+    label: 'Tổng quan',
+    items: [
+      { href: '#linux-la-gi', label: 'Linux là gì?', active: true },
+      { href: '#kernel-va-distro', label: 'Kernel và distribution khác nhau thế nào?' },
+    ],
+  },
+  {
+    label: 'Chương 1 — Linux trong DevOps',
+    items: [
+      { href: '#vi-sao-devops-can-linux', label: 'Vì sao DevOps cần Linux?' },
+      { href: '#linux-xuat-hien-o-dau', label: 'Linux xuất hiện ở đâu trong quy trình?' },
+    ],
+  },
+  {
+    label: 'Chương 2 — Bắt đầu học',
+    items: [
+      { href: '#tu-duy-khi-hoc-linux', label: 'Học theo tình huống, không theo danh sách lệnh' },
+      { href: '#bat-dau-tu-dau', label: 'Lộ trình bắt đầu' },
+    ],
+  },
+  {
+    label: 'Đọc thêm',
+    items: [{ href: '#references', label: 'Tài liệu tham khảo' }],
+  },
 ];
 
 export default function WhatIsLinuxPage() {

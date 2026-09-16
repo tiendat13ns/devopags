@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ArticleToc } from '@/components/article-shell';
 import {
   ChevronRight,
   ExternalLink,
@@ -21,96 +22,202 @@ export const metadata: Metadata = {
 type Command = {
   command: string;
   description: string;
+  usage?: string;
+  example?: string;
   note?: string;
 };
 
 const linuxSections: { id: string; title: string; description: string; commands: Command[] }[] = [
   {
-    id: 'linux-files',
-    title: 'Di chuyển và quản lý file',
-    description: 'Những lệnh đầu tiên cần nhớ khi làm việc trên server.',
+    id: 'linux-basics',
+    title: 'Bắt đầu trong terminal',
+    description: 'Xác định mình đang đứng ở đâu và đang đăng nhập bằng tài khoản nào.',
     commands: [
-      { command: 'pwd', description: 'In đường dẫn của thư mục hiện tại.' },
-      { command: 'ls -lah', description: 'Liệt kê cả file ẩn, kèm quyền và kích thước dễ đọc.' },
-      { command: 'cd /var/log', description: 'Di chuyển đến một thư mục theo đường dẫn tuyệt đối.' },
-      { command: 'mkdir -p app/config', description: 'Tạo cả thư mục cha nếu chúng chưa tồn tại.' },
-      { command: 'touch .env.example', description: 'Tạo file rỗng hoặc cập nhật thời gian sửa file.' },
-      { command: 'cp -r source/ backup/', description: 'Sao chép một thư mục và toàn bộ nội dung.' },
-      { command: 'mv old.conf new.conf', description: 'Di chuyển hoặc đổi tên file.' },
-      { command: 'rm -i file.log', description: 'Xóa file và hỏi xác nhận trước khi xóa.' },
-      { command: 'find . -type f -name "*.log"', description: 'Tìm tất cả file .log từ thư mục hiện tại.' },
-      { command: 'du -sh *', description: 'Xem nhanh dung lượng của từng mục trong thư mục.' },
+      {
+        command: 'pwd',
+        description: 'Hiển thị đường dẫn đầy đủ của thư mục hiện tại. Dùng lệnh này trước khi sao chép, di chuyển hoặc xóa file để tránh thao tác nhầm chỗ.',
+        usage: 'pwd',
+        example: '$ pwd\n/home/tiendat/projects/devopags',
+      },
+      {
+        command: 'whoami',
+        description: 'Hiển thị tên user đang chạy terminal. Hữu ích khi cần kiểm tra mình đang dùng tài khoản thường hay tài khoản có quyền quản trị.',
+        usage: 'whoami',
+        example: '$ whoami\ntiendat',
+      },
     ],
   },
   {
-    id: 'linux-text',
-    title: 'Đọc, tìm kiếm và xử lý text',
-    description: 'Phần lớn việc debug bắt đầu từ việc đọc và lọc log.',
+    id: 'linux-files',
+    title: 'Hệ thống file',
+    description: 'Các thao tác cơ bản để di chuyển, xem, tạo, sao chép và xóa file hoặc thư mục.',
     commands: [
-      { command: 'less app.log', description: 'Đọc file dài theo từng trang; nhấn q để thoát.' },
-      { command: 'head -n 20 app.log', description: 'Xem 20 dòng đầu của file.' },
-      { command: 'tail -f app.log', description: 'Theo dõi các dòng log mới theo thời gian thực.' },
-      { command: 'grep -Rni "error" ./logs', description: 'Tìm error đệ quy, không phân biệt hoa thường và hiện số dòng.' },
-      { command: 'sort access.log | uniq -c', description: 'Sắp xếp rồi đếm số dòng trùng nhau.' },
-      { command: 'cut -d ":" -f 1 /etc/passwd', description: 'Tách cột đầu tiên bằng dấu phân cách :.' },
-      { command: 'sed -n "1,20p" app.conf', description: 'In một khoảng dòng mà không sửa file gốc.' },
+      {
+        command: 'cd',
+        description: 'Chuyển sang một thư mục khác. Dùng đường dẫn tuyệt đối như /var/log hoặc đường dẫn tương đối như ../ để quay lên thư mục cha.',
+        usage: 'cd <đường-dẫn>',
+        example: '$ cd /var/log',
+      },
+      {
+        command: 'ls',
+        description: 'Liệt kê nội dung thư mục. Tùy chọn -l hiện thông tin chi tiết, -a hiện file ẩn và -h giúp kích thước file dễ đọc.',
+        usage: 'ls [tùy-chọn] [đường-dẫn]',
+        example: '$ ls -lah /var/log',
+      },
+      {
+        command: 'mkdir',
+        description: 'Tạo thư mục mới. Thêm -p để tự tạo cả các thư mục cha còn thiếu.',
+        usage: 'mkdir [tùy-chọn] <tên-thư-mục>',
+        example: '$ mkdir -p app/config',
+      },
+      {
+        command: 'touch',
+        description: 'Tạo nhanh một file rỗng. Nếu file đã tồn tại, lệnh chỉ cập nhật thời gian chỉnh sửa gần nhất.',
+        usage: 'touch <tên-file>',
+        example: '$ touch .env.example',
+      },
+      {
+        command: 'rm',
+        description: 'Xóa file hoặc thư mục. Dùng -i để hệ thống hỏi lại trước khi xóa; chỉ dùng -r khi thực sự cần xóa cả thư mục.',
+        usage: 'rm [tùy-chọn] <file-hoặc-thư-mục>',
+        example: '$ rm -i old.log',
+        note: 'File đã xóa bằng rm thường không nằm trong thùng rác. Luôn kiểm tra pwd và ls trước khi chạy.',
+      },
+      {
+        command: 'cp',
+        description: 'Sao chép file từ nơi này sang nơi khác. Thêm -r khi cần sao chép cả thư mục và nội dung bên trong.',
+        usage: 'cp [tùy-chọn] <nguồn> <đích>',
+        example: '$ cp -r config/ backup/config/',
+      },
+      {
+        command: 'mv',
+        description: 'Di chuyển file hoặc thư mục. Nếu nguồn và đích cùng vị trí, mv được dùng để đổi tên.',
+        usage: 'mv <nguồn> <đích>',
+        example: '$ mv nginx-old.conf nginx.conf',
+      },
+    ],
+  },
+  {
+    id: 'linux-content',
+    title: 'Nội dung file và lịch sử lệnh',
+    description: 'Ghi nội dung đơn giản, đọc file và theo dõi log mà không cần công cụ phức tạp.',
+    commands: [
+      {
+        command: 'echo',
+        description: 'In một chuỗi ra terminal. Lệnh thường được dùng để kiểm tra biến hoặc ghi một thông báo đơn giản trong script.',
+        usage: 'echo <nội-dung>',
+        example: '$ echo "Deploy completed"\nDeploy completed',
+      },
+      {
+        command: 'cat',
+        description: 'Đọc toàn bộ nội dung của file ngay trên terminal. Phù hợp với file cấu hình hoặc file text ngắn.',
+        usage: 'cat <tên-file>',
+        example: '$ cat /etc/os-release',
+      },
+      {
+        command: 'history',
+        description: 'Hiển thị các lệnh đã chạy trước đó trong terminal, giúp tìm và sử dụng lại câu lệnh cũ.',
+        usage: 'history',
+        example: '$ history\n  41  pwd\n  42  ls -lah',
+      },
+      {
+        command: 'tail',
+        description: 'Xem những dòng cuối của file. Tùy chọn -f tiếp tục chờ và hiển thị dòng mới, rất hữu ích khi theo dõi log.',
+        usage: 'tail [tùy-chọn] <tên-file>',
+        example: '$ tail -f /var/log/nginx/access.log',
+        note: 'Nhấn Ctrl+C để dừng chế độ theo dõi.',
+      },
     ],
   },
   {
     id: 'linux-system',
-    title: 'Hệ thống và tiến trình',
-    description: 'Kiểm tra tài nguyên trước khi kết luận ứng dụng có lỗi.',
+    title: 'Quyền, tài nguyên và tiến trình',
+    description: 'Kiểm tra quyền quản trị, RAM, ổ đĩa và các tiến trình đang chạy trên server.',
     commands: [
-      { command: 'uname -a', description: 'Xem kernel và kiến trúc hệ thống.' },
-      { command: 'uptime', description: 'Xem thời gian hoạt động và load average.' },
-      { command: 'free -h', description: 'Xem lượng RAM và swap đang sử dụng.' },
-      { command: 'df -h', description: 'Xem dung lượng còn lại của các filesystem.' },
-      { command: 'ps aux', description: 'Liệt kê các tiến trình đang chạy.' },
-      { command: 'top', description: 'Theo dõi tiến trình và tài nguyên theo thời gian thực.' },
-      { command: 'kill -15 <PID>', description: 'Yêu cầu tiến trình dừng một cách an toàn.', note: 'Thử SIGTERM (-15) trước SIGKILL (-9).' },
-      { command: 'lsof -i :8080', description: 'Tìm tiến trình đang sử dụng port 8080.' },
+      {
+        command: 'sudo',
+        description: 'Chạy một lệnh với quyền quản trị. Chỉ thêm sudo khi thao tác thật sự yêu cầu quyền cao hơn.',
+        usage: 'sudo <lệnh>',
+        example: '$ sudo apt update',
+        note: 'Đọc kỹ câu lệnh trước khi nhập mật khẩu, đặc biệt trên máy production.',
+      },
+      {
+        command: 'free',
+        description: 'Xem tổng dung lượng RAM, lượng đang dùng, còn trống và swap. Tùy chọn -h hiển thị theo MB hoặc GB dễ đọc.',
+        usage: 'free [tùy-chọn]',
+        example: '$ free -h',
+      },
+      {
+        command: 'df',
+        description: 'Xem dung lượng đã dùng và còn trống của các filesystem. Đây là lệnh nên kiểm tra khi server báo hết ổ đĩa.',
+        usage: 'df [tùy-chọn]',
+        example: '$ df -h',
+      },
+      {
+        command: 'top',
+        description: 'Theo dõi CPU, RAM và các tiến trình theo thời gian thực. Danh sách được cập nhật liên tục ngay trong terminal.',
+        usage: 'top',
+        example: '$ top',
+        note: 'Nhấn q để thoát.',
+      },
+      {
+        command: 'hostnamectl',
+        description: 'Xem hostname, hệ điều hành, kernel và kiến trúc của máy Linux dùng systemd.',
+        usage: 'hostnamectl [lệnh-con]',
+        example: '$ hostnamectl status',
+      },
+      {
+        command: 'reboot',
+        description: 'Khởi động lại hệ thống. Trên server, lệnh thường cần sudo và sẽ ngắt toàn bộ phiên kết nối hiện tại.',
+        usage: 'sudo reboot',
+        example: '$ sudo reboot',
+        note: 'Chỉ chạy sau khi đã kiểm tra dịch vụ và thông báo cho người liên quan.',
+      },
+      {
+        command: 'ps',
+        description: 'Liệt kê các tiến trình. Cách dùng ps aux cho biết user, PID, CPU, RAM và câu lệnh của từng tiến trình.',
+        usage: 'ps [tùy-chọn]',
+        example: '$ ps aux',
+      },
     ],
   },
   {
-    id: 'linux-network',
-    title: 'Network và kết nối từ xa',
-    description: 'Một nhóm lệnh nhỏ để lần theo sự cố kết nối.',
+    id: 'linux-network-packages',
+    title: 'Mạng và cài đặt package',
+    description: 'Những lệnh đủ dùng để kiểm tra kết nối, port và cài phần mềm trên Ubuntu hoặc Debian.',
     commands: [
-      { command: 'ip addr', description: 'Xem địa chỉ IP của các network interface.' },
-      { command: 'ip route', description: 'Xem bảng định tuyến và default gateway.' },
-      { command: 'ss -tulpn', description: 'Liệt kê TCP/UDP port đang lắng nghe và tiến trình liên quan.' },
-      { command: 'ping -c 4 8.8.8.8', description: 'Gửi bốn gói kiểm tra khả năng kết nối mạng.' },
-      { command: 'dig example.com', description: 'Truy vấn DNS của một tên miền.' },
-      { command: 'curl -I https://example.com', description: 'Chỉ lấy HTTP response headers.' },
-      { command: 'curl -sS http://localhost:8080/health', description: 'Gọi health endpoint, ẩn progress nhưng vẫn hiện lỗi.' },
-      { command: 'ssh user@server', description: 'Đăng nhập server từ xa qua SSH.' },
-      { command: 'scp app.conf user@server:/tmp/', description: 'Sao chép file đến server qua SSH.' },
-    ],
-  },
-  {
-    id: 'linux-permissions',
-    title: 'User và permission',
-    description: 'Đủ dùng để hiểu ai đang chạy lệnh và ai được phép đọc file.',
-    commands: [
-      { command: 'whoami', description: 'Hiển thị user hiện tại.' },
-      { command: 'id', description: 'Xem UID, GID và các group của user.' },
-      { command: 'sudo -l', description: 'Xem những lệnh user được phép chạy với sudo.' },
-      { command: 'chmod u+x deploy.sh', description: 'Thêm quyền thực thi cho chủ sở hữu file.' },
-      { command: 'chmod 640 app.conf', description: 'Owner đọc/ghi, group chỉ đọc, người khác không có quyền.' },
-      { command: 'sudo chown app:app app.conf', description: 'Đổi owner và group của file thành app.' },
-    ],
-  },
-  {
-    id: 'linux-services',
-    title: 'Service, log và package',
-    description: 'Những thao tác thường gặp trên Ubuntu/Debian sử dụng systemd.',
-    commands: [
-      { command: 'systemctl status nginx', description: 'Kiểm tra trạng thái service nginx.' },
-      { command: 'sudo systemctl restart nginx', description: 'Khởi động lại service nginx.' },
-      { command: 'journalctl -u nginx -n 100 --no-pager', description: 'Xem 100 dòng log gần nhất của nginx.' },
-      { command: 'journalctl -u nginx -f', description: 'Theo dõi log mới của nginx theo thời gian thực.' },
-      { command: 'sudo apt update', description: 'Cập nhật danh sách package khả dụng.' },
-      { command: 'sudo apt install <package>', description: 'Cài một package trên Ubuntu/Debian.' },
+      {
+        command: 'netstat',
+        description: 'Xem kết nối mạng và các port đang lắng nghe. Tùy chọn -tulpn hiển thị TCP, UDP, port và tiến trình liên quan.',
+        usage: 'netstat [tùy-chọn]',
+        example: '$ sudo netstat -tulpn',
+        note: 'Một số bản Linux không cài sẵn netstat; có thể cài bằng sudo apt install net-tools.',
+      },
+      {
+        command: 'ping',
+        description: 'Gửi gói tin đến một IP hoặc tên miền để kiểm tra máy đích có phản hồi và đo độ trễ cơ bản.',
+        usage: 'ping [tùy-chọn] <host>',
+        example: '$ ping -c 4 8.8.8.8',
+      },
+      {
+        command: 'telnet',
+        description: 'Thử mở kết nối TCP đến một host và port, thường dùng để kiểm tra nhanh một dịch vụ có nhận kết nối hay không.',
+        usage: 'telnet <host> <port>',
+        example: '$ telnet example.com 80',
+        note: 'Không dùng Telnet để đăng nhập từ xa vì dữ liệu không được mã hóa.',
+      },
+      {
+        command: 'traceroute',
+        description: 'Hiển thị các chặng mạng mà gói tin đi qua để tới máy đích, hữu ích khi tìm vị trí kết nối bị chậm hoặc gián đoạn.',
+        usage: 'traceroute <host>',
+        example: '$ traceroute 8.8.8.8',
+      },
+      {
+        command: 'apt',
+        description: 'Quản lý package trên Ubuntu và Debian. Thường chạy update trước để cập nhật danh sách, sau đó dùng install để cài phần mềm.',
+        usage: 'sudo apt <update|install|remove> [tên-package]',
+        example: '$ sudo apt update\n$ sudo apt install nginx',
+      },
     ],
   },
 ];
@@ -181,12 +288,27 @@ const gitSections: { id: string; title: string; description: string; commands: C
 ];
 
 const tableOfContents = [
-  { href: '#linux', label: 'Linux commands' },
-  ...linuxSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
-  { href: '#git', label: 'Git commands' },
-  ...gitSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
-  { href: '#workflow', label: 'Workflow gợi ý' },
-  { href: '#references', label: 'Tài liệu tham khảo' },
+  {
+    label: 'Chương 1 — Linux commands',
+    items: [
+      { href: '#linux', label: 'Linux commands', active: true },
+      ...linuxSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
+    ],
+  },
+  {
+    label: 'Chương 2 — Git commands',
+    items: [
+      { href: '#git', label: 'Git commands' },
+      ...gitSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
+    ],
+  },
+  {
+    label: 'Thực hành và đọc thêm',
+    items: [
+      { href: '#workflow', label: 'Workflow Git gợi ý' },
+      { href: '#references', label: 'Tài liệu tham khảo' },
+    ],
+  },
 ];
 
 export default function LinuxGitCheatsheet() {
@@ -196,21 +318,7 @@ export default function LinuxGitCheatsheet() {
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
         <aside className="hidden lg:block">
-          <nav className="sticky top-24 border-l border-border pl-5" aria-label="Mục lục bài viết">
-            <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.13em] text-ink">Trong bài này</p>
-            <ol className="space-y-1.5">
-              {tableOfContents.map((item, index) => (
-                <li key={item.href}>
-                  <a
-                    className={`block py-1 text-sm leading-5 transition-colors hover:text-primary ${index === 0 || item.href === '#git' ? 'font-bold text-ink' : 'text-muted-foreground'}`}
-                    href={item.href}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <ArticleToc groups={tableOfContents} />
         </aside>
 
         <article className="min-w-0">
@@ -235,19 +343,30 @@ export default function LinuxGitCheatsheet() {
               </div>
             </div>
             <p className="article-lead">
-              Linux xuất hiện ở hầu hết server, container và môi trường CI. Mục tiêu đầu tiên không phải biết thật nhiều lệnh, mà là có một quy trình quan sát hệ thống rõ ràng.
+              Linux xuất hiện ở hầu hết server, container và môi trường CI. Với người mới, 25 lệnh nền tảng dưới đây đã đủ để di chuyển trong terminal, đọc log, kiểm tra tài nguyên và xử lý các tình huống thường gặp.
             </p>
 
             {linuxSections.map((section) => (
               <CommandSection key={section.id} {...section} />
             ))}
 
+            <div className="my-10 overflow-hidden rounded-2xl border border-[#6f32a8] bg-[#100b18] p-5 text-white shadow-[0_24px_70px_-45px_rgba(111,50,168,0.9)] sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+              <div>
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#c77dff]">Đọc xong thì thử ngay</p>
+                <h3 className="mt-2 text-xl font-bold">Thực hành trong Linux Playground</h3>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-[#c9c1d4]">Gõ các lệnh vừa học trong terminal và filesystem mô phỏng, không ảnh hưởng đến máy thật.</p>
+              </div>
+              <Link className="mt-5 inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#9d4edd] bg-[#7b2cbf] px-4 py-2.5 text-sm font-bold text-white transition hover:border-[#c77dff] hover:bg-[#8f3bd1] sm:mt-0" href="/playground">
+                <Terminal size={16} /> Mở Playground
+              </Link>
+            </div>
+
             <div className="my-10 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-950">
               <TriangleAlert className="mt-0.5 shrink-0 text-amber-600" size={20} />
               <div>
-                <p className="font-bold">Cẩn thận với quyền và lệnh xóa</p>
+                <p className="font-bold">Dừng một nhịp trước lệnh có ảnh hưởng lớn</p>
                 <p className="mt-1 text-sm leading-6 text-amber-900/80">
-                  Không dùng <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">chmod -R 777</code> như một cách sửa lỗi permission. Với lệnh xóa đệ quy, hãy kiểm tra đường dẫn bằng <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">pwd</code> và <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">ls</code> trước.
+                  Trước khi dùng <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">rm</code>, <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">sudo</code> hoặc <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono">reboot</code>, hãy kiểm tra lại máy đang thao tác, đường dẫn hiện tại và ảnh hưởng đến người dùng.
                 </p>
               </div>
             </div>
@@ -326,7 +445,7 @@ git push -u origin docs/linux-cheatsheet`}</code></pre>
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <div className="flex items-center gap-2 font-bold text-ink"><Terminal size={16} className="text-primary" /> DevOpags</div>
           <p>Học đến đâu, thực hành và giải thích lại đến đó.</p>
-          <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns/devopags" target="_blank" rel="noreferrer">
+          <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">
             <GitFork size={15} /> Mã nguồn mở
           </a>
         </div>
@@ -342,11 +461,29 @@ function CommandSection({ id, title, description, commands }: { id: string; titl
       <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
       <div className="mt-5 overflow-hidden rounded-xl border border-border">
         {commands.map((item) => (
-          <div className="command-row grid gap-2 border-b border-border bg-card p-4 last:border-b-0 sm:grid-cols-[minmax(220px,0.9fr)_1.1fr] sm:gap-5 sm:px-5" key={item.command}>
-            <code className="command-code">{item.command}</code>
+          <div className="command-row grid gap-4 border-b border-border bg-card p-4 last:border-b-0 sm:grid-cols-[minmax(150px,0.32fr)_1fr] sm:gap-6 sm:px-5 sm:py-5" key={item.command}>
             <div>
+              <code className="command-code text-base">{item.command}</code>
+            </div>
+            <div className="min-w-0">
               <p className="text-sm leading-6 text-foreground">{item.description}</p>
-              {item.note && <p className="mt-1 text-xs font-semibold leading-5 text-amber-700">Lưu ý: {item.note}</p>}
+              {(item.usage || item.example) && (
+                <div className="mt-3 grid gap-2">
+                  {item.usage && (
+                    <div className="grid gap-1 sm:grid-cols-[72px_minmax(0,1fr)] sm:items-start">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Cách dùng</span>
+                      <code className="min-w-0 overflow-x-auto rounded-md border border-border bg-surface px-2.5 py-1.5 font-mono text-xs text-primary">{item.usage}</code>
+                    </div>
+                  )}
+                  {item.example && (
+                    <div className="grid gap-1 sm:grid-cols-[72px_minmax(0,1fr)] sm:items-start">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Ví dụ</span>
+                      <code className="min-w-0 whitespace-pre overflow-x-auto rounded-md border border-code-border bg-code px-2.5 py-1.5 font-mono text-xs leading-5 text-code-foreground">{item.example}</code>
+                    </div>
+                  )}
+                </div>
+              )}
+              {item.note && <p className="mt-2 text-xs font-semibold leading-5 text-amber-700">Lưu ý: {item.note}</p>}
             </div>
           </div>
         ))}
@@ -385,7 +522,7 @@ function SiteHeader() {
         <div className="flex items-center gap-2">
           <a
             className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
-            href="https://github.com/tiendat13ns/devopags"
+            href="https://github.com/tiendat13ns"
             target="_blank"
             rel="noreferrer"
             aria-label="Mở GitHub"

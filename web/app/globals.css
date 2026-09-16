@@ -112,6 +112,12 @@ body {
   --brand-mark-shadow: rgba(90, 24, 154, 0.3);
   --brand-screen-start: #352040;
   --brand-screen-end: #211329;
+  --docker-primary: #0b9ed9;
+  --docker-primary-dark: #0077b6;
+  --docker-border: rgba(11, 158, 217, 0.34);
+  --docker-card-start: rgba(235, 248, 254, 0.92);
+  --docker-card-end: rgba(246, 252, 255, 0.84);
+  --docker-tag: rgba(11, 158, 217, 0.1);
 }
 
 .dark {
@@ -165,6 +171,12 @@ body {
   --brand-mark-shadow: rgba(123, 44, 191, 0.42);
   --brand-screen-start: #2c1935;
   --brand-screen-end: #170d1d;
+  --docker-primary: #29b6f6;
+  --docker-primary-dark: #7dd3fc;
+  --docker-border: rgba(41, 182, 246, 0.42);
+  --docker-card-start: rgba(10, 51, 72, 0.78);
+  --docker-card-end: rgba(15, 35, 49, 0.82);
+  --docker-tag: rgba(41, 182, 246, 0.12);
 }
 
 .brand-mark {
@@ -197,6 +209,144 @@ body {
   background-image:
     radial-gradient(circle at 88% 8%, rgba(157, 78, 221, 0.08), transparent 34rem),
     radial-gradient(circle at 6% 62%, rgba(123, 44, 191, 0.045), transparent 30rem);
+}
+
+.article-toc {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.article-toc::-webkit-scrollbar {
+  width: 5px;
+}
+
+.article-toc::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.article-toc::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.docker-post-card {
+  border-color: var(--docker-border);
+  background: linear-gradient(135deg, var(--docker-card-start), var(--docker-card-end));
+}
+
+.docker-post-card:hover {
+  border-color: var(--docker-primary);
+  background: linear-gradient(135deg, var(--docker-card-start), var(--docker-card-end));
+  box-shadow: 0 22px 52px -38px rgba(11, 158, 217, 0.85);
+}
+
+.docker-post-card:hover .post-title {
+  color: var(--docker-primary);
+}
+
+.docker-post-card .post-arrow {
+  color: var(--docker-primary);
+  border-color: var(--docker-border);
+}
+
+.docker-post-card:hover .post-arrow {
+  color: #ffffff;
+  border-color: var(--docker-primary);
+  background: var(--docker-primary);
+}
+
+.docker-post-card .post-tag {
+  color: var(--docker-primary-dark);
+  border-color: var(--docker-border);
+  background: var(--docker-tag);
+}
+
+.docker-article-theme {
+  --background: #f5fbfe;
+  --foreground: #234252;
+  --card: #fbfeff;
+  --card-foreground: #102f40;
+  --primary: #0b9ed9;
+  --primary-foreground: #ffffff;
+  --primary-dark: #0077b6;
+  --primary-soft: #e6f6fd;
+  --muted: #eaf6fb;
+  --muted-foreground: #536f7d;
+  --accent: #e5f5fc;
+  --accent-foreground: #0077b6;
+  --border: #c7e7f5;
+  --input: #c7e7f5;
+  --ring: #0b9ed9;
+  --surface: #edf8fd;
+  --ink: #102f40;
+  --code: #0c2431;
+  --code-border: #23566e;
+  --code-foreground: #eefaff;
+}
+
+.docker-article-theme.article-reading-bg {
+  background-image:
+    radial-gradient(circle at 88% 8%, rgba(11, 158, 217, 0.12), transparent 34rem),
+    radial-gradient(circle at 6% 62%, rgba(41, 182, 246, 0.07), transparent 30rem);
+}
+
+.dark .docker-article-theme {
+  --background: #0d1b24;
+  --foreground: #e9f7fd;
+  --card: #112631;
+  --card-foreground: #f4fbff;
+  --primary: #29b6f6;
+  --primary-foreground: #08202c;
+  --primary-dark: #7dd3fc;
+  --primary-soft: #12384a;
+  --muted: #15313f;
+  --muted-foreground: #a9c5d2;
+  --accent: #153b4e;
+  --accent-foreground: #7dd3fc;
+  --border: #28556b;
+  --input: #31667f;
+  --ring: #29b6f6;
+  --surface: #10232e;
+  --ink: #ffffff;
+  --code: #08151c;
+  --code-border: #28556b;
+  --code-foreground: #eefaff;
+}
+
+.dark .docker-article-theme.article-reading-bg {
+  background-image:
+    radial-gradient(circle at 88% 8%, rgba(41, 182, 246, 0.13), transparent 34rem),
+    radial-gradient(circle at 6% 62%, rgba(0, 119, 182, 0.1), transparent 30rem);
+}
+
+@keyframes post-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-page-enter {
+  animation: post-page-enter 280ms ease-out both;
+}
+
+.pagination-current-page {
+  color: #ffffff !important;
+  border-color: var(--brand-gradient-end) !important;
+  background: linear-gradient(135deg, var(--brand-gradient-start), var(--brand-gradient-mid)) !important;
+  box-shadow: 0 8px 20px -12px var(--brand-mark-shadow);
+}
+
+.pagination-current-page:hover {
+  color: #ffffff !important;
+}
+
+.pagination-page {
+  color: var(--foreground) !important;
 }
 
 .dark .article-reading-bg {
@@ -382,7 +532,8 @@ body {
   .devops-grid-motion,
   .devops-network-motion,
   .devops-node-motion,
-  .devops-command-motion {
+  .devops-command-motion,
+  .post-page-enter {
     animation: none !important;
   }
 }

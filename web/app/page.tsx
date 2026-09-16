@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { ArrowUpRight, CalendarDays, Clock, Menu, Terminal } from 'lucide-react';
+import { ArrowUpRight, Menu, Terminal } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { PaginatedPostList, type Post } from '@/components/post-list';
 
-const posts = [
+const posts: Post[] = [
   {
     title: 'Linux là gì và tại sao Linux cần thiết cho DevOps?',
     description: 'Hiểu Linux từ kernel, distribution đến vai trò của Linux trong server, container, cloud và công việc DevOps hằng ngày.',
@@ -10,6 +11,7 @@ const posts = [
     readTime: '9 phút đọc',
     tags: ['Linux', 'DevOps', 'Cơ bản'],
     href: '/bai-viet/linux-la-gi',
+    accent: 'amethyst',
   },
   {
     title: 'Docker là gì và tại sao nên dùng Docker?',
@@ -18,6 +20,7 @@ const posts = [
     readTime: '10 phút đọc',
     tags: ['Docker', 'Container', 'DevOps'],
     href: '/bai-viet/docker-la-gi',
+    accent: 'docker',
   },
   {
     title: 'Linux & Git Cheatsheet cho DevOps Intern',
@@ -26,6 +29,7 @@ const posts = [
     readTime: '15 phút đọc',
     tags: ['Linux', 'Git'],
     href: '/bai-viet/linux-git-cheatsheet',
+    accent: 'amethyst',
   },
 ];
 
@@ -50,6 +54,7 @@ export default function Home() {
             <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Trong blog này</p>
             <div className="mt-4 flex flex-col text-sm font-medium">
               <a className="border-l-2 border-primary py-2 pl-3 text-primary" href="#bai-viet">Bài viết mới</a>
+              <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#playground">DevOps Playground</a>
               <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#chu-de">Chủ đề</a>
               <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#gioi-thieu">Về mình</a>
             </div>
@@ -60,41 +65,9 @@ export default function Home() {
           <section id="bai-viet" aria-labelledby="posts-title">
             <SectionTitle id="posts-title" label="Bài viết mới" command="ls ./posts" />
 
-            <div className="mt-5 space-y-4">
-              {posts.map((post) => (
-                <article key={post.href}>
-                  <Link
-                    className="group block border border-border bg-card/80 p-5 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card sm:p-7"
-                    href={post.href}
-                  >
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5"><CalendarDays size={14} /> {post.date}</span>
-                      <span className="inline-flex items-center gap-1.5"><Clock size={14} /> {post.readTime}</span>
-                    </div>
+            <PaginatedPostList posts={posts} />
 
-                    <div className="mt-4 flex items-start justify-between gap-5">
-                      <div>
-                        <h2 className="text-xl font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-primary sm:text-2xl">
-                          {post.title}
-                        </h2>
-                        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-                          {post.description}
-                        </p>
-                      </div>
-                      <span className="grid size-9 shrink-0 place-items-center border border-primary/30 text-primary transition group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                        <ArrowUpRight size={16} />
-                      </span>
-                    </div>
-
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {post.tags.map((tag) => (
-                        <span key={tag} className="border border-primary/20 bg-primary-soft px-2.5 py-1 font-mono text-xs font-semibold text-primary-dark">{tag}</span>
-                      ))}
-                    </div>
-                  </Link>
-                </article>
-              ))}
-            </div>
+            <LinuxPlaygroundPreview />
           </section>
 
           <aside className="space-y-10 lg:border-l lg:border-border lg:pl-7">
@@ -128,7 +101,7 @@ export default function Home() {
       <footer className="relative z-10 border-t border-border bg-background/75 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-7 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>© 2026 Tiến Đạt · DevOpags</p>
-          <a className="font-semibold transition hover:text-primary" href="https://github.com/tiendat13ns/devopags" target="_blank" rel="noreferrer">GitHub</a>
+          <a className="font-semibold transition hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </footer>
     </main>
@@ -141,6 +114,60 @@ function SectionTitle({ id, label, command }: { id: string; label: string; comma
       <h2 id={id} className="text-xl font-bold tracking-tight text-ink">{label}</h2>
       <span className="hidden font-mono text-xs text-muted-foreground sm:block">$ {command}</span>
     </div>
+  );
+}
+
+function LinuxPlaygroundPreview() {
+  return (
+    <section id="playground" className="mt-12 scroll-mt-24" aria-labelledby="playground-title">
+      <div className="overflow-hidden rounded-2xl border border-[#6f32a8] bg-[#100b18] shadow-[0_24px_70px_-42px_rgba(111,50,168,0.95)]">
+        <div className="flex h-11 items-center justify-between border-b border-white/10 bg-[#1a1026] px-4">
+          <div className="flex gap-2" aria-hidden="true">
+            <span className="size-2.5 rounded-full bg-[#5a189a]" />
+            <span className="size-2.5 rounded-full bg-[#9d4edd]" />
+            <span className="size-2.5 rounded-full bg-[#c77dff]" />
+          </div>
+          <span className="font-mono text-[11px] font-semibold text-white/45">linux-playground</span>
+          <Terminal className="text-white/35" size={15} />
+        </div>
+
+        <div className="grid gap-7 p-5 sm:p-7 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+          <div>
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-[#c77dff]">Thực hành ngay trên trình duyệt</p>
+            <h2 id="playground-title" className="mt-2 text-2xl font-bold tracking-[-0.035em] text-white">DevOps Playground</h2>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#c9c1d4]">
+              Thử Linux trong filesystem ảo và luyện Git với repository mô phỏng có branch, staging area và commit history.
+            </p>
+            <Link
+              className="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#a855d4] bg-gradient-to-r from-[#552077] via-[#7629a8] to-[#5d2184] px-4 py-2.5 text-sm font-bold text-white ring-1 ring-[#c77dff]/20 shadow-[0_0_9px_rgba(168,85,247,0.3),0_8px_22px_-15px_rgba(168,85,247,0.75),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c77dff] hover:from-[#67268f] hover:via-[#8b35bc] hover:to-[#6f2998] hover:shadow-[0_0_13px_rgba(192,132,252,0.45),0_10px_26px_-16px_rgba(168,85,247,0.85),inset_0_1px_0_rgba(255,255,255,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c77dff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#100b18]"
+              href="/playground"
+            >
+              <Terminal size={16} /> Mở DevOps Playground <ArrowUpRight size={16} />
+            </Link>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#160d20] p-4 font-mono text-xs leading-6 sm:text-[13px]">
+            <p>
+              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
+              <span className="font-semibold text-[#67d9ff]">:~</span>
+              <span className="text-white">$ pwd</span>
+            </p>
+            <p className="text-[#c9c1d4]">/home/devopags</p>
+            <p className="mt-1">
+              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
+              <span className="font-semibold text-[#67d9ff]">:~</span>
+              <span className="text-white">$ git status</span>
+            </p>
+            <p className="text-[#63d7a4]">On branch main · app.js modified</p>
+            <p className="mt-1">
+              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
+              <span className="font-semibold text-[#67d9ff]">:~</span>
+              <span className="text-white">$ <span className="inline-block h-4 w-1.5 translate-y-1 bg-[#dfa8ff]" aria-hidden="true" /></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -159,6 +186,7 @@ function SiteHeader() {
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
           <a className="transition hover:text-primary" href="#bai-viet">Bài viết</a>
+          <a className="transition hover:text-primary" href="#playground">Playground</a>
           <a className="transition hover:text-primary" href="#chu-de">Chủ đề</a>
           <a className="transition hover:text-primary" href="#gioi-thieu">Về mình</a>
         </nav>
@@ -172,6 +200,7 @@ function SiteHeader() {
             </summary>
             <nav className="absolute right-0 top-12 flex w-40 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium text-muted-foreground shadow-2xl" aria-label="Điều hướng di động">
               <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#bai-viet">Bài viết</a>
+              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#playground">Playground</a>
               <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#chu-de">Chủ đề</a>
               <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#gioi-thieu">Về mình</a>
             </nav>
@@ -186,7 +215,7 @@ function GitHubLink() {
   return (
     <a
       className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition hover:border-primary/40 hover:bg-accent hover:text-primary"
-      href="https://github.com/tiendat13ns/devopags"
+      href="https://github.com/tiendat13ns"
       target="_blank"
       rel="noreferrer"
       aria-label="Mở GitHub"
