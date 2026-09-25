@@ -1,26 +1,21 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
 export const metadata: Metadata = {
-  title: 'DevOpags — Ghi chép DevOps từ nền tảng',
+  title: 'tiendat13ns — Ghi chép DevOps từ nền tảng',
   description: 'Kiến thức DevOps cơ bản, bài thực hành và những ghi chép từ hành trình của một DevOps Intern.',
+  icons: {
+    icon: [{ url: '/favicon.svg?v=16', type: 'image/svg+xml' }],
+    shortcut: '/favicon.svg?v=16',
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.svg?v=16" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/favicon.svg?v=16" type="image/svg+xml" />
         <script
           dangerouslySetInnerHTML={{
             __html:
@@ -28,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body>
         {children}
       </body>
     </html>

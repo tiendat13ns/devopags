@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ArticleToc } from '@/components/article-shell';
+import { SocialLinks } from '@/components/social-links';
 import {
   ChevronRight,
   ExternalLink,
@@ -14,7 +15,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Linux & Git Cheatsheet cho DevOps Intern | DevOpags',
+  title: 'Linux & Git Cheatsheet cho DevOps Intern | tiendat13ns',
   description:
     'Các lệnh Linux và Git thường dùng nhất khi học và làm DevOps, được nhóm theo tình huống để dễ tra cứu.',
 };
@@ -287,30 +288,6 @@ const gitSections: { id: string; title: string; description: string; commands: C
   },
 ];
 
-const tableOfContents = [
-  {
-    label: 'Chương 1 — Linux commands',
-    items: [
-      { href: '#linux', label: 'Linux commands', active: true },
-      ...linuxSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
-    ],
-  },
-  {
-    label: 'Chương 2 — Git commands',
-    items: [
-      { href: '#git', label: 'Git commands' },
-      ...gitSections.map((section) => ({ href: `#${section.id}`, label: section.title })),
-    ],
-  },
-  {
-    label: 'Thực hành và đọc thêm',
-    items: [
-      { href: '#workflow', label: 'Workflow Git gợi ý' },
-      { href: '#references', label: 'Tài liệu tham khảo' },
-    ],
-  },
-];
-
 export default function LinuxGitCheatsheet() {
   return (
     <main className="article-reading-bg min-h-screen text-foreground transition-colors duration-300">
@@ -318,7 +295,7 @@ export default function LinuxGitCheatsheet() {
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
         <aside className="hidden lg:block">
-          <ArticleToc groups={tableOfContents} />
+          <ArticleToc currentHref="/bai-viet/linux-git-cheatsheet" />
         </aside>
 
         <article className="min-w-0">
@@ -443,7 +420,7 @@ git push -u origin docs/linux-cheatsheet`}</code></pre>
 
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <div className="flex items-center gap-2 font-bold text-ink"><Terminal size={16} className="text-primary" /> DevOpags</div>
+          <div className="font-bold text-ink">tiendat13ns</div>
           <p>Học đến đâu, thực hành và giải thích lại đến đó.</p>
           <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">
             <GitFork size={15} /> Mã nguồn mở
@@ -506,20 +483,17 @@ function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link className="group flex items-center gap-3" href="/" aria-label="DevOpags - Trang chủ">
-          <span className="brand-mark size-10 rounded-[13px] p-[3px] transition-transform group-hover:-rotate-3">
-            <span className="brand-mark-screen grid size-full place-items-center rounded-[9px]">
-              <Terminal size={20} strokeWidth={2.4} />
-            </span>
-          </span>
-          <span className="text-[1.05rem] font-bold tracking-[-0.025em]">DevOp<span className="text-primary">ags</span></span>
+        <Link className="inline-flex items-center" href="/" aria-label="tiendat13ns - Trang chủ">
+          <span className="text-[1.05rem] font-bold tracking-[-0.025em]">tiendat<span className="text-primary">13ns</span></span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
-          <Link className="text-primary" href="/#bai-viet" aria-current="page">Bài viết</Link>
-          <Link className="transition-colors hover:text-primary" href="/#chu-de">Chủ đề</Link>
+          <Link className="text-primary" href="/tai-lieu" aria-current="page">Tài liệu</Link>
+          <Link className="transition-colors hover:text-primary" href="/playground">Playground</Link>
+          <Link className="transition-colors hover:text-primary" href="/chia-se">Chia sẻ</Link>
           <Link className="transition-colors hover:text-primary" href="/#gioi-thieu">Về mình</Link>
         </nav>
         <div className="flex items-center gap-2">
+          <SocialLinks />
           <a
             className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
             href="https://github.com/tiendat13ns"
@@ -536,8 +510,9 @@ function SiteHeader() {
           <details className="relative md:hidden">
             <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border border-border bg-card [&::-webkit-details-marker]:hidden" aria-label="Mở menu"><Menu size={18} /></summary>
             <nav className="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium shadow-xl" aria-label="Điều hướng di động">
-              <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/#bai-viet">Bài viết</Link>
-              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#chu-de">Chủ đề</Link>
+              <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/tai-lieu">Tài liệu</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/playground">Playground</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/chia-se">Chia sẻ</Link>
               <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#gioi-thieu">Về mình</Link>
             </nav>
           </details>

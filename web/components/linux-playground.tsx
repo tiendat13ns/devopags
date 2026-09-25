@@ -56,7 +56,7 @@ const SUPPORTED_COMMANDS = [
 ];
 
 const INITIAL_LINES: TerminalLine[] = [
-  { kind: 'system', text: 'DevOpags Linux Playground · môi trường mô phỏng an toàn' },
+  { kind: 'system', text: 'tiendat13ns Linux Playground · môi trường mô phỏng an toàn' },
   { kind: 'system', text: 'Gõ “help” để xem lệnh hỗ trợ hoặc bắt đầu với “pwd”.' },
 ];
 
@@ -115,7 +115,7 @@ function createInitialFileSystem(): DirectoryNode {
           log: {
             type: 'directory',
             children: {
-              'syslog': { type: 'file', content: 'systemd: Started DevOpags playground\nnetwork: eth0 is up' },
+              'syslog': { type: 'file', content: 'systemd: Started tiendat13ns playground\nnetwork: eth0 is up' },
             },
           },
         },
@@ -536,19 +536,19 @@ function LinuxTerminal() {
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
       <section
-        className="overflow-hidden rounded-2xl border border-[#6f32a8] bg-[#100b18] shadow-[0_28px_80px_-40px_rgba(111,50,168,0.9)]"
+        className="overflow-hidden border border-border bg-card/65 shadow-[0_18px_48px_-42px_var(--brand-mark-shadow)] backdrop-blur-sm"
         aria-label="Linux terminal mô phỏng"
       >
-        <div className="flex h-12 items-center justify-between border-b border-white/10 bg-[#1a1026] px-4">
+        <div className="flex h-12 items-center justify-between border-b border-border bg-muted/55 px-4">
           <div className="flex gap-2" aria-hidden="true">
-            <span className="size-3 rounded-full bg-[#5a189a] shadow-[0_0_10px_rgba(90,24,154,0.8)]" />
-            <span className="size-3 rounded-full bg-[#9d4edd] shadow-[0_0_10px_rgba(157,78,221,0.8)]" />
-            <span className="size-3 rounded-full bg-[#c77dff] shadow-[0_0_10px_rgba(199,125,255,0.8)]" />
+            <span className="size-3 rounded-full bg-primary/35" />
+            <span className="size-3 rounded-full bg-primary/65" />
+            <span className="size-3 rounded-full bg-primary" />
           </div>
-          <span className="font-mono text-xs font-semibold text-white/55">devopags — bash</span>
+          <span className="font-mono text-xs font-semibold text-muted-foreground">devopags — bash</span>
           <div className="flex items-center gap-1">
             <button
-              className="grid size-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-[#dfa8ff]"
+              className="grid size-8 place-items-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-primary"
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
@@ -560,7 +560,7 @@ function LinuxTerminal() {
               <Trash2 size={15} />
             </button>
             <button
-              className="grid size-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-[#dfa8ff]"
+              className="grid size-8 place-items-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-primary"
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
@@ -582,20 +582,20 @@ function LinuxTerminal() {
           {lines.map((line, index) =>
             line.kind === 'command' ? (
               <div className="break-words" key={`${line.command}-${index}`}>
-                <span className="font-semibold text-[#c77dff]">devopags@lab</span>
-                <span className="font-semibold text-[#67d9ff]">:{line.path}</span>
-                <span className="text-white">$ {line.command}</span>
+                <span className="font-semibold text-primary">devopags@lab</span>
+                <span className="font-semibold text-muted-foreground">:{line.path}</span>
+                <span className="text-ink">$ {line.command}</span>
               </div>
             ) : (
               <pre
                 className={`whitespace-pre-wrap break-words font-mono ${
                   line.kind === 'error'
-                    ? 'text-[#ff6b81]'
+                    ? 'text-destructive'
                     : line.kind === 'success'
-                      ? 'text-[#63d7a4]'
+                      ? 'text-primary'
                       : line.kind === 'system'
-                        ? 'text-[#ffd166]'
-                        : 'text-[#c9c1d4]'
+                        ? 'text-primary-dark'
+                        : 'text-muted-foreground'
                 }`}
                 key={`${line.text}-${index}`}
               >
@@ -606,13 +606,13 @@ function LinuxTerminal() {
 
           <form className="mt-1 flex min-w-0 items-center" onSubmit={submitCommand}>
             <label className="sr-only" htmlFor="linux-command">Nhập lệnh Linux</label>
-            <span className="shrink-0 font-semibold text-[#c77dff]">devopags@lab</span>
-            <span className="shrink-0 font-semibold text-[#67d9ff]">:{formatPromptPath(cwd)}</span>
-            <span className="shrink-0 text-white">$&nbsp;</span>
+            <span className="shrink-0 font-semibold text-primary">devopags@lab</span>
+            <span className="shrink-0 font-semibold text-muted-foreground">:{formatPromptPath(cwd)}</span>
+            <span className="shrink-0 text-ink">$&nbsp;</span>
             <input
               ref={inputRef}
               id="linux-command"
-              className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-white caret-[#dfa8ff] outline-none placeholder:text-white/25"
+              className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-ink caret-primary outline-none placeholder:text-muted-foreground/45"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={handleKeyDown}
@@ -621,13 +621,13 @@ function LinuxTerminal() {
               spellCheck={false}
               placeholder="nhập lệnh..."
             />
-            <button className="ml-2 grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 text-white/55 transition hover:border-[#9d4edd] hover:text-[#dfa8ff]" type="submit" aria-label="Chạy lệnh">
+            <button className="ml-2 grid size-8 shrink-0 place-items-center rounded-md border border-border text-muted-foreground transition hover:border-primary/45 hover:bg-accent hover:text-primary" type="submit" aria-label="Chạy lệnh">
               <CornerDownLeft size={15} />
             </button>
           </form>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 bg-[#160d20] px-4 py-2.5 font-mono text-[11px] text-white/35 sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/30 px-4 py-2.5 font-mono text-[11px] text-muted-foreground sm:px-5">
           <span>↑ ↓ lịch sử · Tab hoàn thành lệnh</span>
           <span>Mọi thao tác chỉ diễn ra trong trình duyệt</span>
         </div>
@@ -954,7 +954,7 @@ function GitPlayground() {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [lines, setLines] = useState<TerminalLine[]>([
-    { kind: 'system', text: 'DevOpags Git Playground · repository mô phỏng an toàn' },
+    { kind: 'system', text: 'tiendat13ns Git Playground · repository mô phỏng an toàn' },
     { kind: 'system', text: 'Repo đang có file modified và untracked. Hãy bắt đầu với “git status”.' },
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -1037,19 +1037,19 @@ function GitPlayground() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
-      <section className="overflow-hidden rounded-2xl border border-[#6f32a8] bg-[#100b18] shadow-[0_28px_80px_-40px_rgba(111,50,168,0.9)]" aria-label="Git terminal mô phỏng">
-        <div className="flex h-12 items-center justify-between border-b border-white/10 bg-[#1a1026] px-4">
+      <section className="overflow-hidden border border-border bg-card/65 shadow-[0_18px_48px_-42px_var(--brand-mark-shadow)] backdrop-blur-sm" aria-label="Git terminal mô phỏng">
+        <div className="flex h-12 items-center justify-between border-b border-border bg-muted/55 px-4">
           <div className="flex gap-2" aria-hidden="true">
-            <span className="size-3 rounded-full bg-[#5a189a]" />
-            <span className="size-3 rounded-full bg-[#9d4edd]" />
-            <span className="size-3 rounded-full bg-[#c77dff]" />
+            <span className="size-3 rounded-full bg-primary/35" />
+            <span className="size-3 rounded-full bg-primary/65" />
+            <span className="size-3 rounded-full bg-primary" />
           </div>
-          <span className="font-mono text-xs font-semibold text-white/55">devopags — git:{repository.branch}</span>
+          <span className="font-mono text-xs font-semibold text-muted-foreground">devopags — git:{repository.branch}</span>
           <div className="flex items-center gap-1">
-            <button className="grid size-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-[#dfa8ff]" type="button" onClick={() => setLines([])} aria-label="Xóa nội dung terminal" title="Xóa terminal">
+            <button className="grid size-8 place-items-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-primary" type="button" onClick={() => setLines([])} aria-label="Xóa nội dung terminal" title="Xóa terminal">
               <Trash2 size={15} />
             </button>
-            <button className="grid size-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-[#dfa8ff]" type="button" onClick={resetGitPlayground} aria-label="Khôi phục Git Playground" title="Khôi phục">
+            <button className="grid size-8 place-items-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-primary" type="button" onClick={resetGitPlayground} aria-label="Khôi phục Git Playground" title="Khôi phục">
               <RotateCcw size={15} />
             </button>
           </div>
@@ -1059,13 +1059,13 @@ function GitPlayground() {
           {lines.map((line, index) =>
             line.kind === 'command' ? (
               <div className="break-words" key={`${line.command}-${index}`}>
-                <span className="font-semibold text-[#c77dff]">devopags@lab</span>
-                <span className="font-semibold text-[#67d9ff]">:{line.path}</span>
-                <span className="text-white">$ {line.command}</span>
+                <span className="font-semibold text-primary">devopags@lab</span>
+                <span className="font-semibold text-muted-foreground">:{line.path}</span>
+                <span className="text-ink">$ {line.command}</span>
               </div>
             ) : (
               <pre
-                className={`whitespace-pre-wrap break-words font-mono ${line.kind === 'error' ? 'text-[#ff6b81]' : line.kind === 'success' ? 'text-[#63d7a4]' : line.kind === 'system' ? 'text-[#ffd166]' : 'text-[#c9c1d4]'}`}
+                className={`whitespace-pre-wrap break-words font-mono ${line.kind === 'error' ? 'text-destructive' : line.kind === 'success' ? 'text-primary' : line.kind === 'system' ? 'text-primary-dark' : 'text-muted-foreground'}`}
                 key={`${line.text}-${index}`}
               >
                 {line.text}
@@ -1075,14 +1075,14 @@ function GitPlayground() {
 
           <form className="mt-1 flex min-w-0 items-center" onSubmit={submitGitCommand}>
             <label className="sr-only" htmlFor="git-command">Nhập lệnh Git</label>
-            <span className="shrink-0 font-semibold text-[#c77dff]">devopags@lab</span>
-            <span className="shrink-0 font-semibold text-[#67d9ff]">:~/project</span>
-            <span className="shrink-0 font-semibold text-[#63d7a4]">({repository.branch})</span>
-            <span className="shrink-0 text-white">$&nbsp;</span>
+            <span className="shrink-0 font-semibold text-primary">devopags@lab</span>
+            <span className="shrink-0 font-semibold text-muted-foreground">:~/project</span>
+            <span className="shrink-0 font-semibold text-primary">({repository.branch})</span>
+            <span className="shrink-0 text-ink">$&nbsp;</span>
             <input
               ref={inputRef}
               id="git-command"
-              className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-white caret-[#dfa8ff] outline-none placeholder:text-white/25"
+              className="min-w-0 flex-1 border-0 bg-transparent p-0 font-mono text-ink caret-primary outline-none placeholder:text-muted-foreground/45"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={handleGitKeyDown}
@@ -1091,13 +1091,13 @@ function GitPlayground() {
               spellCheck={false}
               placeholder="git status"
             />
-            <button className="ml-2 grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 text-white/55 transition hover:border-[#9d4edd] hover:text-[#dfa8ff]" type="submit" aria-label="Chạy lệnh Git">
+            <button className="ml-2 grid size-8 shrink-0 place-items-center rounded-md border border-border text-muted-foreground transition hover:border-primary/45 hover:bg-accent hover:text-primary" type="submit" aria-label="Chạy lệnh Git">
               <CornerDownLeft size={15} />
             </button>
           </form>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 bg-[#160d20] px-4 py-2.5 font-mono text-[11px] text-white/35 sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/30 px-4 py-2.5 font-mono text-[11px] text-muted-foreground sm:px-5">
           <span>branch: {repository.branch} · staged: {stagedCount} · working: {workingCount}</span>
           <span>repository ảo · không push dữ liệu thật</span>
         </div>

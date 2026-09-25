@@ -2,8 +2,118 @@ import Link from 'next/link';
 import { ArrowUpRight, Menu, Terminal } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { PaginatedPostList, type Post } from '@/components/post-list';
+import { SocialLinks } from '@/components/social-links';
+import { AnimatedTerminal } from '@/components/animated-terminal';
 
-const posts: Post[] = [
+const documentPosts: Post[] = [
+  {
+    title: 'Nhập môn Machine Learning với KNN',
+    description: 'Từ input, feature, label, loss và generalisation đến KNN, distance metric, scaling, validation và giới hạn của dữ liệu nhiều chiều.',
+    date: '23/09/2026',
+    readTime: '18 phút đọc',
+    tags: ['Machine Learning', 'Supervised Learning', 'KNN'],
+    href: '/bai-viet/nhap-mon-machine-learning-va-knn',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Kiến trúc Transformer',
+    description: 'Từ embedding và positional encoding đến multi-head attention, residual, feed-forward cùng ba họ Transformer phổ biến.',
+    date: '23/09/2026',
+    readTime: '17 phút đọc',
+    tags: ['AI', 'Attention', 'Transformer'],
+    href: '/bai-viet/kien-truc-transformer',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Cơ chế Attention',
+    description: 'Hiểu Query, Key, Value, scaled dot-product, mask và multi-head attention qua mô phỏng trọng số giữa các token.',
+    date: '23/09/2026',
+    readTime: '15 phút đọc',
+    tags: ['AI', 'Deep Learning', 'Attention'],
+    href: '/bai-viet/co-che-attention',
+    accent: 'amethyst',
+  },
+  {
+    title: 'So sánh RNN, LSTM và GRU',
+    description: 'So sánh memory, gate, parameter, tốc độ và độ ổn định; đối chiếu với benchmark 100 lần chạy trên ba bộ time series.',
+    date: '23/09/2026',
+    readTime: '16 phút đọc',
+    tags: ['AI', 'RNN', 'Time Series'],
+    href: '/bai-viet/so-sanh-rnn-lstm-gru',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Kiến trúc RNN',
+    description: 'Hiểu cách RNN đọc chuỗi theo từng timestep, truyền hidden state và vì sao LSTM, GRU giúp mạng ghi nhớ tốt hơn.',
+    date: '23/09/2026',
+    readTime: '15 phút đọc',
+    tags: ['AI', 'Deep Learning', 'RNN'],
+    href: '/bai-viet/kien-truc-rnn-la-gi',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Kiến trúc CNN',
+    description: 'Hiểu cách kernel quét ảnh, tạo feature map và cách channel, stride, padding, pooling phối hợp trong một CNN.',
+    date: '23/09/2026',
+    readTime: '15 phút đọc',
+    tags: ['AI', 'Deep Learning', 'CNN'],
+    href: '/bai-viet/kien-truc-cnn-la-gi',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Kiến trúc MLP',
+    description: 'Từ vector đầu vào qua các fully connected layer, activation, logits và cách tính parameter của một MLP.',
+    date: '23/09/2026',
+    readTime: '14 phút đọc',
+    tags: ['AI', 'Deep Learning', 'MLP'],
+    href: '/bai-viet/kien-truc-mlp-la-gi',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Đọc kết quả model: Loss, Accuracy, Precision, Recall và F1',
+    description: 'Phân biệt loss và metric, đọc confusion matrix, hiểu threshold và chọn metric phù hợp với chi phí sai của sản phẩm.',
+    date: '22/09/2026',
+    readTime: '13 phút đọc',
+    tags: ['AI', 'Machine Learning'],
+    href: '/bai-viet/danh-gia-model-loss-accuracy-precision-recall-f1',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Dữ liệu đi vào mạng dưới dạng gì?',
+    description: 'Hiểu cách ảnh, text, bảng và graph được biểu diễn thành vector, tensor, token ID, embedding và cấu trúc số cho model.',
+    date: '22/09/2026',
+    readTime: '14 phút đọc',
+    tags: ['AI', 'Deep Learning'],
+    href: '/bai-viet/du-lieu-vao-mang-vector-tensor-token-embedding-graph',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Hàm kích hoạt',
+    description: 'Hiểu vai trò của tính phi tuyến, ReLU, Sigmoid, Tanh, GELU, Softmax và cách chọn activation cho từng bài toán.',
+    date: '22/09/2026',
+    readTime: '12 phút đọc',
+    tags: ['AI', 'Deep Learning'],
+    href: '/bai-viet/ham-kich-hoat-la-gi',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Deep Learning',
+    description: 'Cách mình hiểu Deep Learning: vị trí trong AI, parameter, weight, bias, training, inference và các architecture phổ biến.',
+    date: '22/09/2026',
+    readTime: '14 phút đọc',
+    tags: ['AI', 'Deep Learning'],
+    href: '/bai-viet/deep-learning-la-gi',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Tư duy triển khai bất kỳ dự án nào cho DevOps',
+    description: 'Cách nhìn một dự án từ góc độ DevOps: runtime, phiên bản, file cấu hình, quy trình build và cách chạy ứng dụng an toàn trên Linux.',
+    date: '16/09/2026',
+    readTime: '10 phút đọc',
+    tags: ['Linux', 'DevOps', 'Deployment'],
+    href: '/bai-viet/tu-duy-trien-khai-du-an',
+    accent: 'amethyst',
+  },
   {
     title: 'Linux là gì và tại sao Linux cần thiết cho DevOps?',
     description: 'Hiểu Linux từ kernel, distribution đến vai trò của Linux trong server, container, cloud và công việc DevOps hằng ngày.',
@@ -33,6 +143,18 @@ const posts: Post[] = [
   },
 ];
 
+const sharingPosts: Post[] = [
+  {
+    title: 'Three Wise Monkeys',
+    description: 'Từ màn ăn mừng của ba cầu thủ PSV đến câu chuyện phía sau biểu tượng “không nhìn, không nghe, không nói điều ác”.',
+    date: '16/09/2026',
+    readTime: '5 phút đọc',
+    tags: ['Văn hóa', 'Bóng đá'],
+    href: '/chia-se/three-wise-monkeys',
+    accent: 'amethyst',
+  },
+];
+
 export default function Home() {
   return (
     <main className="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground transition-colors duration-300">
@@ -40,42 +162,62 @@ export default function Home() {
       <SiteHeader />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
-        <section id="top" className="grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-20 lg:py-20">
+        <section id="top" className="grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,0.8fr)_minmax(460px,1fr)] lg:items-start lg:gap-12 lg:py-20">
           <div className="max-w-2xl border-l-2 border-primary pl-6 sm:pl-8">
             <p className="font-mono text-sm font-semibold text-primary">$ whoami</p>
-            <h1 className="mt-3 text-4xl font-bold tracking-[-0.045em] text-ink sm:text-5xl">Tiến Đạt</h1>
-            <p className="mt-2 text-base font-semibold text-foreground">DevOps Intern · Người viết DevOpags</p>
-            <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
-              Mình ghi lại những gì vừa học về Linux, Git, Docker và hệ thống — ngắn gọn, có ví dụ và đủ để mở ra tra cứu khi cần.
+            <h1 className="mt-3 text-3xl font-semibold tracking-[-0.025em] text-ink sm:text-4xl">Tiến Đạt</h1>
+            <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
+              Đây là blog cá nhân ghi lại quá trình học tập của mình. Nội dung sẽ được cập nhật theo thời gian; hiện tại mình vẫn đang là sinh viên năm 4.
+            </p>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
+              Có thể liên hệ với mình qua các liên kết mạng xã hội hoặc Gmail:{' '}
+              <a className="font-semibold text-primary transition-colors hover:text-primary-dark hover:underline" href="mailto:dat96133@gmail.com">
+                dat96133@gmail.com
+              </a>
             </p>
           </div>
 
-          <nav className="h-fit border border-border bg-card/75 p-5 backdrop-blur-sm" aria-label="Trong trang này">
-            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Trong blog này</p>
-            <div className="mt-4 flex flex-col text-sm font-medium">
-              <a className="border-l-2 border-primary py-2 pl-3 text-primary" href="#bai-viet">Bài viết mới</a>
-              <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#playground">DevOps Playground</a>
-              <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#chu-de">Chủ đề</a>
-              <a className="border-l-2 border-transparent py-2 pl-3 text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#gioi-thieu">Về mình</a>
-            </div>
-          </nav>
+          <LinuxPlaygroundPreview />
         </section>
 
         <div className="grid gap-12 pb-16 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-20 lg:pb-24">
-          <section id="bai-viet" aria-labelledby="posts-title">
-            <SectionTitle id="posts-title" label="Bài viết mới" command="ls ./posts" />
+          <section id="bai-viet" className="space-y-10" aria-label="Bài viết mới">
+            <div aria-labelledby="documents-title">
+              <SectionTitle id="documents-title" label="Tài liệu mới" command="ls ./tai-lieu" />
+              <PaginatedPostList posts={documentPosts} autoAdvanceMs={5000} />
+            </div>
 
-            <PaginatedPostList posts={posts} />
-
-            <LinuxPlaygroundPreview />
+            <div id="chia-se-moi" className="scroll-mt-24" aria-labelledby="sharing-title">
+              <SectionTitle id="sharing-title" label="Chia sẻ mới" command="ls ./chia-se" />
+              <PaginatedPostList posts={sharingPosts} />
+            </div>
           </section>
 
           <aside className="space-y-10 lg:border-l lg:border-border lg:pl-7">
             <section id="gioi-thieu" aria-labelledby="about-title">
               <h2 id="about-title" className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary">Về mình</h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Đang học DevOps qua từng task nhỏ và viết lại theo cách mình hiểu.
+                Sinh viên năm 4, cung Bảo Bình. Mình đang tìm hiểu cách đưa AI vào ứng dụng và xây dựng quy trình DevOps thực tế.
               </p>
+
+              <dl className="mt-5 space-y-4">
+                <div>
+                  <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary/80">Sở thích</dt>
+                  <dd className="mt-1 text-sm leading-6 text-muted-foreground">Cầu lông · Bóng đá · Đọc sách</dd>
+                </div>
+                <div>
+                  <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary/80">Lĩnh vực</dt>
+                  <dd className="mt-1 text-sm leading-6 text-muted-foreground">Ứng dụng AI · DevOps</dd>
+                </div>
+                <div>
+                  <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary/80">Ngôn ngữ / Framework</dt>
+                  <dd className="mt-1 text-sm leading-6 text-muted-foreground">Python · JavaScript · TypeScript · React · NestJS</dd>
+                </div>
+                <div>
+                  <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-primary/80">Dịch vụ</dt>
+                  <dd className="mt-1 text-sm leading-6 text-muted-foreground">MinIO · Cloudflare R2</dd>
+                </div>
+              </dl>
             </section>
 
             <section id="chu-de" aria-labelledby="topics-title">
@@ -89,10 +231,14 @@ export default function Home() {
 
             <section aria-labelledby="status-title">
               <h2 id="status-title" className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary">Status</h2>
-              <p className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="size-2 rounded-full bg-primary shadow-[0_0_12px_rgba(168,85,247,0.9)]" />
-                Đang học mỗi ngày
-              </p>
+              <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
+                {['Intern AI Application (Fullstack)', 'Hanoi University', 'Studying everyday...'].map((status) => (
+                  <li className="flex items-start gap-2" key={status}>
+                    <span className="mt-2 size-1.5 shrink-0 bg-primary shadow-[0_0_10px_rgba(168,85,247,0.8)]" aria-hidden="true" />
+                    <span>{status}</span>
+                  </li>
+                ))}
+              </ul>
             </section>
           </aside>
         </div>
@@ -100,7 +246,7 @@ export default function Home() {
 
       <footer className="relative z-10 border-t border-border bg-background/75 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-7 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>© 2026 Tiến Đạt · DevOpags</p>
+          <p>© 2026 Tiến Đạt · tiendat13ns</p>
           <a className="font-semibold transition hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </footer>
@@ -119,52 +265,34 @@ function SectionTitle({ id, label, command }: { id: string; label: string; comma
 
 function LinuxPlaygroundPreview() {
   return (
-    <section id="playground" className="mt-12 scroll-mt-24" aria-labelledby="playground-title">
-      <div className="overflow-hidden rounded-2xl border border-[#6f32a8] bg-[#100b18] shadow-[0_24px_70px_-42px_rgba(111,50,168,0.95)]">
-        <div className="flex h-11 items-center justify-between border-b border-white/10 bg-[#1a1026] px-4">
+    <section id="playground" className="h-fit scroll-mt-24" aria-labelledby="playground-title">
+      <div className="overflow-hidden border border-border bg-card/70 shadow-[0_18px_48px_-42px_var(--brand-mark-shadow)] backdrop-blur-sm">
+        <div className="flex h-11 items-center justify-between border-b border-border bg-muted/55 px-4">
           <div className="flex gap-2" aria-hidden="true">
-            <span className="size-2.5 rounded-full bg-[#5a189a]" />
-            <span className="size-2.5 rounded-full bg-[#9d4edd]" />
-            <span className="size-2.5 rounded-full bg-[#c77dff]" />
+            <span className="size-2.5 rounded-full bg-primary/35" />
+            <span className="size-2.5 rounded-full bg-primary/65" />
+            <span className="size-2.5 rounded-full bg-primary" />
           </div>
-          <span className="font-mono text-[11px] font-semibold text-white/45">linux-playground</span>
-          <Terminal className="text-white/35" size={15} />
+          <span className="font-mono text-[11px] font-semibold text-muted-foreground">linux-playground</span>
+          <Terminal className="text-muted-foreground" size={15} />
         </div>
 
-        <div className="grid gap-7 p-5 sm:p-7 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+        <div className="grid gap-5 p-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] xl:items-center">
           <div>
-            <p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-[#c77dff]">Thực hành ngay trên trình duyệt</p>
-            <h2 id="playground-title" className="mt-2 text-2xl font-bold tracking-[-0.035em] text-white">DevOps Playground</h2>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-[#c9c1d4]">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-primary">Thực hành trên trình duyệt</p>
+            <h2 id="playground-title" className="mt-2 text-xl font-semibold tracking-normal text-ink">DevOps Playground</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
               Thử Linux trong filesystem ảo và luyện Git với repository mô phỏng có branch, staging area và commit history.
             </p>
             <Link
-              className="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#a855d4] bg-gradient-to-r from-[#552077] via-[#7629a8] to-[#5d2184] px-4 py-2.5 text-sm font-bold text-white ring-1 ring-[#c77dff]/20 shadow-[0_0_9px_rgba(168,85,247,0.3),0_8px_22px_-15px_rgba(168,85,247,0.75),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c77dff] hover:from-[#67268f] hover:via-[#8b35bc] hover:to-[#6f2998] hover:shadow-[0_0_13px_rgba(192,132,252,0.45),0_10px_26px_-16px_rgba(168,85,247,0.85),inset_0_1px_0_rgba(255,255,255,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c77dff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#100b18]"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 border border-primary/35 bg-primary-soft px-3 py-2 text-xs font-semibold text-primary-dark transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               href="/playground"
             >
               <Terminal size={16} /> Mở DevOps Playground <ArrowUpRight size={16} />
             </Link>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-[#160d20] p-4 font-mono text-xs leading-6 sm:text-[13px]">
-            <p>
-              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
-              <span className="font-semibold text-[#67d9ff]">:~</span>
-              <span className="text-white">$ pwd</span>
-            </p>
-            <p className="text-[#c9c1d4]">/home/devopags</p>
-            <p className="mt-1">
-              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
-              <span className="font-semibold text-[#67d9ff]">:~</span>
-              <span className="text-white">$ git status</span>
-            </p>
-            <p className="text-[#63d7a4]">On branch main · app.js modified</p>
-            <p className="mt-1">
-              <span className="font-semibold text-[#c77dff]">devopags@lab</span>
-              <span className="font-semibold text-[#67d9ff]">:~</span>
-              <span className="text-white">$ <span className="inline-block h-4 w-1.5 translate-y-1 bg-[#dfa8ff]" aria-hidden="true" /></span>
-            </p>
-          </div>
+          <AnimatedTerminal />
         </div>
       </div>
     </section>
@@ -175,23 +303,19 @@ function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <a className="group flex items-center gap-3" href="#top" aria-label="DevOpags - Trang chủ">
-          <span className="brand-mark size-10 rounded-[13px] p-[3px] transition-transform group-hover:-rotate-3">
-            <span className="brand-mark-screen grid size-full place-items-center rounded-[9px]">
-              <Terminal size={20} strokeWidth={2.4} />
-            </span>
-          </span>
-          <span className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">DevOp<span className="text-primary">ags</span></span>
+        <a className="inline-flex items-center" href="/" aria-label="tiendat13ns - Trang chủ">
+          <span className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">tiendat<span className="text-primary">13ns</span></span>
         </a>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
-          <a className="transition hover:text-primary" href="#bai-viet">Bài viết</a>
-          <a className="transition hover:text-primary" href="#playground">Playground</a>
-          <a className="transition hover:text-primary" href="#chu-de">Chủ đề</a>
+          <a className="transition hover:text-primary" href="/tai-lieu">Tài liệu</a>
+          <a className="transition hover:text-primary" href="/playground">Playground</a>
+          <a className="transition hover:text-primary" href="/chia-se">Chia sẻ</a>
           <a className="transition hover:text-primary" href="#gioi-thieu">Về mình</a>
         </nav>
 
         <div className="flex items-center gap-2">
+          <SocialLinks />
           <GitHubLink />
           <ThemeToggle />
           <details className="relative md:hidden">
@@ -199,9 +323,9 @@ function SiteHeader() {
               <Menu size={18} />
             </summary>
             <nav className="absolute right-0 top-12 flex w-40 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium text-muted-foreground shadow-2xl" aria-label="Điều hướng di động">
-              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#bai-viet">Bài viết</a>
-              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#playground">Playground</a>
-              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#chu-de">Chủ đề</a>
+              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/tai-lieu">Tài liệu</a>
+              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/playground">Playground</a>
+              <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/chia-se">Chia sẻ</a>
               <a className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="#gioi-thieu">Về mình</a>
             </nav>
           </details>

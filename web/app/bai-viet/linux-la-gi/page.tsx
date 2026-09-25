@@ -3,41 +3,13 @@ import { Boxes, CheckCircle2, Cloud, Container, Server, ShieldCheck, SquareTermi
 import { ArticleIntro, ArticleSection, ArticleShell, ReferenceLink } from '@/components/article-shell';
 
 export const metadata: Metadata = {
-  title: 'Linux là gì và tại sao Linux cần thiết cho DevOps? | DevOpags',
+  title: 'Linux là gì và tại sao Linux cần thiết cho DevOps? | tiendat13ns',
   description: 'Hiểu Linux từ kernel, distribution đến vai trò của Linux trong server, container, CI/CD và công việc DevOps hằng ngày.',
 };
 
-const toc = [
-  {
-    label: 'Tổng quan',
-    items: [
-      { href: '#linux-la-gi', label: 'Linux là gì?', active: true },
-      { href: '#kernel-va-distro', label: 'Kernel và distribution khác nhau thế nào?' },
-    ],
-  },
-  {
-    label: 'Chương 1 — Linux trong DevOps',
-    items: [
-      { href: '#vi-sao-devops-can-linux', label: 'Vì sao DevOps cần Linux?' },
-      { href: '#linux-xuat-hien-o-dau', label: 'Linux xuất hiện ở đâu trong quy trình?' },
-    ],
-  },
-  {
-    label: 'Chương 2 — Bắt đầu học',
-    items: [
-      { href: '#tu-duy-khi-hoc-linux', label: 'Học theo tình huống, không theo danh sách lệnh' },
-      { href: '#bat-dau-tu-dau', label: 'Lộ trình bắt đầu' },
-    ],
-  },
-  {
-    label: 'Đọc thêm',
-    items: [{ href: '#references', label: 'Tài liệu tham khảo' }],
-  },
-];
-
 export default function WhatIsLinuxPage() {
   return (
-    <ArticleShell toc={toc}>
+    <ArticleShell currentHref="/bai-viet/linux-la-gi">
       <ArticleIntro
         eyebrow="Nền tảng DevOps"
         title="Linux là gì và tại sao Linux cần thiết cho DevOps?"

@@ -22,12 +22,30 @@ export type Post = {
 
 const POSTS_PER_PAGE = 2;
 
-export function PaginatedPostList({ posts }: { posts: Post[] }) {
+export function PaginatedPostList({
+  posts,
+  autoAdvanceMs,
+}: {
+  posts: Post[];
+  autoAdvanceMs?: number;
+}) {
   const [page, setPage] = useState(1);
   const [hasChangedPage, setHasChangedPage] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const totalPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
   const visiblePosts = posts.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
+
+  useEffect(() => {
+    if (!autoAdvanceMs || totalPages <= 1 || isPaused) return;
+
+    const intervalId = window.setInterval(() => {
+      setHasChangedPage(false);
+      setPage((currentPage) => currentPage >= totalPages ? 1 : currentPage + 1);
+    }, autoAdvanceMs);
+
+    return () => window.clearInterval(intervalId);
+  }, [autoAdvanceMs, isPaused, totalPages]);
 
   useEffect(() => {
     if (!hasChangedPage) return;
@@ -45,12 +63,18 @@ export function PaginatedPostList({ posts }: { posts: Post[] }) {
     <div ref={listRef} className="scroll-mt-24">
       <span className="sr-only" aria-live="polite">Trang {page} trên {totalPages}</span>
 
-      <div className="min-h-[30rem] pt-5">
-        <div className="post-page-enter space-y-4" key={page}>
+      <div
+        className={`${totalPages > 1 ? 'min-h-[22rem]' : ''} pt-4`}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={() => setIsPaused(false)}
+      >
+        <div className="post-page-enter space-y-3" key={page}>
           {visiblePosts.map((post) => (
             <article key={post.href}>
               <Link
-                className={`group block border border-border bg-card/80 p-5 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card sm:p-7 ${post.accent === 'docker' ? 'docker-post-card' : ''}`}
+                className={`group block border border-border bg-card/80 p-4 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-card sm:p-5 ${post.accent === 'docker' ? 'docker-post-card' : ''}`}
                 href={post.href}
               >
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-muted-foreground">
@@ -58,23 +82,23 @@ export function PaginatedPostList({ posts }: { posts: Post[] }) {
                   <span className="inline-flex items-center gap-1.5"><Clock size={14} /> {post.readTime}</span>
                 </div>
 
-                <div className="mt-4 flex items-start justify-between gap-5">
+                <div className="mt-3 flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="post-title text-xl font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-primary sm:text-2xl">
+                    <h2 className="post-title text-lg font-semibold leading-snug tracking-[-0.015em] text-ink transition-colors group-hover:text-primary sm:text-xl">
                       {post.title}
                     </h2>
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                       {post.description}
                     </p>
                   </div>
-                  <span className="post-arrow grid size-9 shrink-0 place-items-center border border-primary/30 text-primary transition group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                    <ArrowUpRight size={16} />
+                  <span className="post-arrow grid size-8 shrink-0 place-items-center border border-primary/30 text-primary transition group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                    <ArrowUpRight size={15} />
                   </span>
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-1.5">
                   {post.tags.map((tag) => (
-                    <span key={tag} className="post-tag border border-primary/20 bg-primary-soft px-2.5 py-1 font-mono text-xs font-semibold text-primary-dark">{tag}</span>
+                    <span key={tag} className="post-tag border border-primary/20 bg-primary-soft px-2 py-0.5 font-mono text-xs font-semibold text-primary-dark">{tag}</span>
                   ))}
                 </div>
               </Link>
@@ -84,7 +108,7 @@ export function PaginatedPostList({ posts }: { posts: Post[] }) {
       </div>
 
       {totalPages > 1 && (
-        <Pagination className="mt-6" aria-label="Phân trang bài viết">
+        <Pagination className="mt-4" aria-label="Phân trang bài viết">
           <PaginationContent className="gap-1.5">
             <PaginationItem>
               <PaginationLink

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, Menu, ShieldCheck, Terminal } from 'lucide-react';
+import { ArrowLeft, BookOpen, Menu, ShieldCheck } from 'lucide-react';
 import { DevOpsPlayground } from '@/components/linux-playground';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { SocialLinks } from '@/components/social-links';
 
 export const metadata: Metadata = {
-  title: 'DevOps Playground | DevOpags',
+  title: 'DevOps Playground | tiendat13ns',
   description: 'Thực hành Linux và Git ngay trên trình duyệt trong một môi trường terminal mô phỏng an toàn.',
 };
 
@@ -50,22 +51,19 @@ function PlaygroundHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <Link className="group flex items-center gap-3" href="/" aria-label="DevOpags - Trang chủ">
-          <span className="brand-mark size-10 rounded-[13px] p-[3px] transition-transform group-hover:-rotate-3">
-            <span className="brand-mark-screen grid size-full place-items-center rounded-[9px]">
-              <Terminal size={20} strokeWidth={2.4} />
-            </span>
-          </span>
-          <span className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">DevOp<span className="text-primary">ags</span></span>
+        <Link className="inline-flex items-center" href="/" aria-label="tiendat13ns - Trang chủ">
+          <span className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">tiendat<span className="text-primary">13ns</span></span>
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
-          <Link className="transition hover:text-primary" href="/#bai-viet">Bài viết</Link>
+          <Link className="transition hover:text-primary" href="/tai-lieu">Tài liệu</Link>
           <Link className="text-primary" href="/playground" aria-current="page">Playground</Link>
+          <Link className="transition hover:text-primary" href="/chia-se">Chia sẻ</Link>
           <Link className="transition hover:text-primary" href="/#gioi-thieu">Về mình</Link>
         </nav>
 
         <div className="flex items-center gap-2">
+          <SocialLinks />
           <a
             className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition hover:border-primary/40 hover:bg-accent hover:text-primary"
             href="https://github.com/tiendat13ns"
@@ -84,8 +82,9 @@ function PlaygroundHeader() {
               <Menu size={18} />
             </summary>
             <nav className="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium text-muted-foreground shadow-2xl" aria-label="Điều hướng di động">
-              <Link className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/#bai-viet">Bài viết</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/tai-lieu">Tài liệu</Link>
               <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/playground">Playground</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/chia-se">Chia sẻ</Link>
               <Link className="rounded-lg px-3 py-2 hover:bg-accent hover:text-ink" href="/#gioi-thieu">Về mình</Link>
             </nav>
           </details>

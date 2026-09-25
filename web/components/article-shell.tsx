@@ -1,26 +1,71 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { ExternalLink, GitFork, Menu, Terminal } from 'lucide-react';
+import { ExternalLink, GitFork, Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { SocialLinks } from '@/components/social-links';
 
-type TocItem = {
+type TopicItem = {
   href: string;
   label: string;
-  active?: boolean;
 };
 
-export type TocGroup = {
+type TopicGroup = {
   label: string;
-  items: TocItem[];
+  items: TopicItem[];
 };
+
+const articleTopics: TopicGroup[] = [
+  {
+    label: 'Linux',
+    items: [
+      { href: '/bai-viet/tu-duy-trien-khai-du-an', label: 'Tư duy triển khai dự án cho DevOps' },
+      { href: '/bai-viet/linux-la-gi', label: 'Linux là gì?' },
+      { href: '/bai-viet/linux-git-cheatsheet', label: 'Linux & Git Cheatsheet' },
+    ],
+  },
+  {
+    label: 'Git',
+    items: [
+      { href: '/bai-viet/linux-git-cheatsheet', label: 'Linux & Git Cheatsheet' },
+    ],
+  },
+  {
+    label: 'Docker',
+    items: [
+      { href: '/bai-viet/docker-la-gi', label: 'Docker là gì và tại sao nên dùng?' },
+    ],
+  },
+  {
+    label: 'Machine Learning',
+    items: [
+      { href: '/bai-viet/nhap-mon-machine-learning-va-knn', label: 'Nhập môn Machine Learning với KNN' },
+      { href: '/bai-viet/decision-tree-va-bias-variance', label: 'Decision Tree và bias–variance' },
+    ],
+  },
+  {
+    label: 'AI / Deep Learning',
+    items: [
+      { href: '/bai-viet/deep-learning-la-gi', label: 'Deep Learning' },
+      { href: '/bai-viet/du-lieu-vao-mang-vector-tensor-token-embedding-graph', label: 'Dữ liệu đi vào mạng dưới dạng gì?' },
+      { href: '/bai-viet/kien-truc-mlp-la-gi', label: 'Kiến trúc MLP' },
+      { href: '/bai-viet/ham-kich-hoat-la-gi', label: 'Hàm kích hoạt' },
+      { href: '/bai-viet/kien-truc-cnn-la-gi', label: 'Kiến trúc CNN' },
+      { href: '/bai-viet/kien-truc-rnn-la-gi', label: 'Kiến trúc RNN' },
+      { href: '/bai-viet/so-sanh-rnn-lstm-gru', label: 'So sánh RNN, LSTM và GRU' },
+      { href: '/bai-viet/co-che-attention', label: 'Cơ chế Attention' },
+      { href: '/bai-viet/kien-truc-transformer', label: 'Kiến trúc Transformer' },
+      { href: '/bai-viet/danh-gia-model-loss-accuracy-precision-recall-f1', label: 'Đọc loss và các metric' },
+    ],
+  },
+];
 
 export function ArticleShell({
   children,
-  toc,
+  currentHref,
   theme = 'default',
 }: {
   children: ReactNode;
-  toc: TocGroup[];
+  currentHref: string;
   theme?: 'default' | 'docker';
 }) {
   return (
@@ -29,7 +74,7 @@ export function ArticleShell({
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
         <aside className="hidden lg:block">
-          <ArticleToc groups={toc} />
+          <ArticleToc currentHref={currentHref} />
         </aside>
 
         <article className="min-w-0">{children}</article>
@@ -37,7 +82,7 @@ export function ArticleShell({
 
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <div className="flex items-center gap-2 font-bold text-ink"><Terminal size={16} className="text-primary" /> DevOpags</div>
+          <div className="font-bold text-ink">tiendat13ns</div>
           <p>Học đến đâu, thực hành và giải thích lại đến đó.</p>
           <a className="inline-flex items-center gap-2 font-semibold hover:text-primary" href="https://github.com/tiendat13ns" target="_blank" rel="noreferrer">
             <GitFork size={15} /> Mã nguồn mở
@@ -48,26 +93,31 @@ export function ArticleShell({
   );
 }
 
-export function ArticleToc({ groups }: { groups: TocGroup[] }) {
+export function ArticleToc({ currentHref }: { currentHref: string }) {
   return (
-    <nav className="article-toc sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border border-border bg-card/55 p-5 backdrop-blur-sm" aria-label="Mục lục bài viết">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-primary">Mục lục bài viết</p>
+    <nav className="article-toc sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border border-border bg-card/55 p-5 backdrop-blur-sm" aria-label="Bài viết theo chủ đề">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-primary">Bài viết theo chủ đề</p>
       <div className="mt-4 space-y-6">
-        {groups.map((group) => (
-          <section key={group.label}>
-            <h2 className="text-[0.72rem] font-medium uppercase leading-5 tracking-[0.08em] text-primary/75">{group.label}</h2>
-            <ol className="mt-2 space-y-1">
-              {group.items.map((item) => (
-                <li key={item.href}>
-                  <a
-                    className={`block border-l-2 py-1.5 pl-3 text-sm font-semibold leading-5 transition-colors ${item.active ? 'border-primary text-primary' : 'border-transparent text-ink hover:border-primary/45 hover:text-primary'}`}
-                    href={item.href}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ol>
+        {articleTopics.map((topic) => (
+          <section key={topic.label}>
+            <h2 className="text-[0.72rem] font-semibold uppercase leading-5 tracking-[0.08em] text-primary/75">{topic.label}</h2>
+            <ul className="mt-2 space-y-1">
+              {topic.items.map((item) => {
+                const isActive = item.href === currentHref;
+
+                return (
+                  <li key={`${topic.label}-${item.href}`}>
+                    <Link
+                      className={`block border-l-2 py-1.5 pl-3 text-sm font-semibold leading-5 transition-colors ${isActive ? 'border-primary bg-primary-soft text-primary' : 'border-transparent text-ink hover:border-primary/45 hover:text-primary'}`}
+                      href={item.href}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         ))}
       </div>
@@ -79,22 +129,24 @@ export function ArticleIntro({
   eyebrow,
   title,
   description,
+  date = '16/09/2026',
   readTime,
   tags,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
+  date?: string;
   readTime: string;
   tags: string[];
 }) {
   return (
     <header className="mb-12 border-b border-border pb-10">
-      <p className="section-eyebrow">{eyebrow}</p>
-      <h1 className="mt-3 text-4xl font-bold leading-[1.1] tracking-[-0.045em] text-ink sm:text-5xl">{title}</h1>
+      {eyebrow ? <p className="section-eyebrow">{eyebrow}</p> : null}
+      <h1 className="mt-3 text-2xl font-semibold leading-[1.25] tracking-normal text-ink sm:text-3xl">{title}</h1>
       <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{description}</p>
       <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
-        <span className="font-mono text-muted-foreground">16/09/2026 · {readTime}</span>
+        <span className="font-mono text-muted-foreground">{date} · {readTime}</span>
         {tags.map((tag) => (
           <span className="border border-primary/20 bg-primary-soft px-2.5 py-1 font-mono font-semibold text-primary-dark" key={tag}>{tag}</span>
         ))}
@@ -112,16 +164,16 @@ export function ArticleSection({
 }: {
   id: string;
   number: string;
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   children: ReactNode;
 }) {
   return (
     <section id={id} className="scroll-mt-24 pt-12 first:pt-0">
       <div className="article-section-title">
-        <span className="section-number">{number}</span>
+        <span className="section-number">{number.replace(/^0+/, '') || '0'}</span>
         <div>
-          <p className="section-eyebrow">{eyebrow}</p>
+          {eyebrow ? <p className="section-eyebrow">{eyebrow}</p> : null}
           <h2>{title}</h2>
         </div>
       </div>
@@ -144,22 +196,19 @@ function ArticleHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link className="group flex items-center gap-3" href="/" aria-label="DevOpags - Trang chủ">
-          <span className="brand-mark size-10 rounded-[13px] p-[3px] transition-transform group-hover:-rotate-3">
-            <span className="brand-mark-screen grid size-full place-items-center rounded-[9px]">
-              <Terminal size={20} strokeWidth={2.4} />
-            </span>
-          </span>
-          <span className="text-[1.05rem] font-bold tracking-[-0.025em]">DevOp<span className="text-primary">ags</span></span>
+        <Link className="inline-flex items-center" href="/" aria-label="tiendat13ns - Trang chủ">
+          <span className="text-[1.05rem] font-bold tracking-[-0.025em]">tiendat<span className="text-primary">13ns</span></span>
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex" aria-label="Điều hướng chính">
-          <Link className="text-primary" href="/#bai-viet" aria-current="page">Bài viết</Link>
-          <Link className="transition-colors hover:text-primary" href="/#chu-de">Chủ đề</Link>
+          <Link className="text-primary" href="/tai-lieu" aria-current="page">Tài liệu</Link>
+          <Link className="transition-colors hover:text-primary" href="/playground">Playground</Link>
+          <Link className="transition-colors hover:text-primary" href="/chia-se">Chia sẻ</Link>
           <Link className="transition-colors hover:text-primary" href="/#gioi-thieu">Về mình</Link>
         </nav>
 
         <div className="flex items-center gap-2">
+          <SocialLinks />
           <a
             className="grid size-9 place-items-center rounded-lg border border-border bg-card text-ink transition-colors hover:border-primary/30 hover:bg-accent hover:text-primary"
             href="https://github.com/tiendat13ns"
@@ -176,8 +225,9 @@ function ArticleHeader() {
           <details className="relative md:hidden">
             <summary className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border border-border bg-card [&::-webkit-details-marker]:hidden" aria-label="Mở menu"><Menu size={18} /></summary>
             <nav className="absolute right-0 top-12 flex w-44 flex-col gap-1 rounded-xl border border-border bg-card p-2 text-sm font-medium shadow-xl" aria-label="Điều hướng di động">
-              <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/#bai-viet">Bài viết</Link>
-              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#chu-de">Chủ đề</Link>
+              <Link className="rounded-lg bg-primary-soft px-3 py-2 text-primary" href="/tai-lieu">Tài liệu</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/playground">Playground</Link>
+              <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/chia-se">Chia sẻ</Link>
               <Link className="rounded-lg px-3 py-2 hover:bg-accent" href="/#gioi-thieu">Về mình</Link>
             </nav>
           </details>

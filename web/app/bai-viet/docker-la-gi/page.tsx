@@ -3,43 +3,13 @@ import { Box, Boxes, CheckCircle2, Container, Layers3, PackageOpen, RefreshCcw, 
 import { ArticleIntro, ArticleSection, ArticleShell, ReferenceLink } from '@/components/article-shell';
 
 export const metadata: Metadata = {
-  title: 'Docker là gì và tại sao nên dùng Docker? | DevOpags',
+  title: 'Docker là gì và tại sao nên dùng Docker? | tiendat13ns',
   description: 'Giải thích Docker, image, container, registry và lý do container giúp quy trình phát triển, kiểm thử, CI/CD và triển khai nhất quán hơn.',
 };
 
-const toc = [
-  {
-    label: 'Tổng quan',
-    items: [
-      { href: '#van-de-docker-giai-quyet', label: 'Docker giải quyết vấn đề gì?', active: true },
-      { href: '#docker-la-gi', label: 'Docker là gì?' },
-    ],
-  },
-  {
-    label: 'Chương 1 — Container dễ hiểu',
-    items: [
-      { href: '#khai-niem-cot-loi', label: 'Các khái niệm cốt lõi' },
-      { href: '#container-va-vm', label: 'Container khác máy ảo như thế nào?' },
-    ],
-  },
-  {
-    label: 'Chương 2 — Docker trong DevOps',
-    items: [
-      { href: '#vi-sao-devops-dung-docker', label: 'Vì sao DevOps dùng Docker?' },
-      { href: '#vong-doi', label: 'Vòng đời một ứng dụng với Docker' },
-      { href: '#docker-khong-phai', label: 'Docker không phải là gì?' },
-      { href: '#bat-dau', label: 'Bắt đầu thực hành' },
-    ],
-  },
-  {
-    label: 'Đọc thêm',
-    items: [{ href: '#references', label: 'Tài liệu tham khảo' }],
-  },
-];
-
 export default function WhatIsDockerPage() {
   return (
-    <ArticleShell toc={toc} theme="docker">
+    <ArticleShell currentHref="/bai-viet/docker-la-gi" theme="docker">
       <ArticleIntro
         eyebrow="Container cơ bản"
         title="Docker là gì và tại sao nên dùng Docker?"
