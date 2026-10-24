@@ -19,7 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('devopags-theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}",
+              "try{var t=localStorage.getItem('devopags-theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';var a=JSON.parse(localStorage.getItem('devopags-accent')||'null');if(a){var r=document.documentElement;r.dataset.accent=a.hex;r.style.setProperty('--user-hue',a.hue);r.style.setProperty('--user-chroma',a.chroma)}}catch(e){}",
           }}
         />
       </head>
