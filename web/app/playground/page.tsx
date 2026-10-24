@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
+  Activity,
   ArrowRight,
   BrainCircuit,
+  Cable,
   ChartNoAxesCombined,
   GitBranch,
   Network,
+  Receipt,
   ScanSearch,
+  ShieldCheck,
   Terminal,
+  Waypoints,
 } from 'lucide-react';
 import { PrimaryHeader } from '@/components/primary-header';
 
@@ -92,6 +97,82 @@ export default function PlaygroundPage() {
             action="Mở DevOps Lab"
             icon={<Terminal size={26} />}
           />
+        </section>
+
+        <section className="network-article-theme mt-12" aria-labelledby="network-lab-heading">
+          <div className="border-b border-border pb-3">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+              Mạng máy tính
+            </p>
+            <h2 id="network-lab-heading" className="mt-1 text-xl font-bold tracking-tight text-ink">
+              Network Lab
+            </h2>
+          </div>
+          <div className="mt-5 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+            <LabCard
+              eyebrow="Network Lab · mới"
+              title="Packet Simulator"
+              description="Sửa IP, mask, gateway, bật tắt NAT hay cắt dây rồi gửi ping. Theo gói tin qua ARP, switch, bảng định tuyến và NAT, soi header ở từng chặng."
+              href="/playground/network/packet-sim"
+              action="Mở Packet Simulator"
+              icon={<Cable size={26} />}
+              featured
+            />
+            <LabCard
+              eyebrow="Network Lab · mới"
+              title="Routing Lab"
+              description="Đổi cost, cắt link giữa sáu router và xem Dijkstra tính lại đường ngắn nhất. So sánh cách OSPF và RIP chọn đường."
+              href="/playground/network/routing"
+              action="Mở Routing Lab"
+              icon={<Waypoints size={26} />}
+            />
+            <LabCard
+              eyebrow="Network Lab · mới"
+              title="TCP Congestion Control"
+              description="Theo cwnd qua từng RTT: slow start, congestion avoidance, mất gói do timeout hay 3 duplicate ACK, và khác biệt giữa Tahoe với Reno."
+              href="/playground/network/tcp"
+              action="Mở TCP Lab"
+              icon={<Activity size={26} />}
+            />
+          </div>
+        </section>
+
+        <section className="cloud-article-theme mt-12" aria-labelledby="cloud-lab-heading">
+          <div className="border-b border-border pb-3">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+              Cloud trên AWS
+            </p>
+            <h2 id="cloud-lab-heading" className="mt-1 text-xl font-bold tracking-tight text-ink">
+              Cloud Lab
+            </h2>
+          </div>
+          <div className="mt-5 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+            <LabCard
+              eyebrow="Cloud Lab · mới"
+              title="VPC Designer"
+              description="Tự chia subnet, đặt NAT, ALB, web server và database vào từng AZ. Thiết kế được kiểm tra ngay: CIDR, đường ra Internet, độ lộ của database, khả năng chịu sự cố."
+              href="/playground/cloud/vpc-designer"
+              action="Mở VPC Designer"
+              icon={<Network size={26} />}
+              featured
+            />
+            <LabCard
+              eyebrow="Cloud Lab · mới"
+              title="IAM Policy Playground"
+              description="Viết policy JSON, permissions boundary và SCP, dựng request với IP, MFA, region, tag và xem Allow hay Deny kèm lý do của từng statement."
+              href="/playground/cloud/iam-policy"
+              action="Mở IAM Playground"
+              icon={<ShieldCheck size={26} />}
+            />
+            <LabCard
+              eyebrow="Cloud Lab · mới"
+              title="Cloud Cost Estimator"
+              description="Kéo số lượng EC2, NAT, ALB, S3, RDS và traffic để xem hóa đơn tháng đến từ đâu, và vì sao NAT hay IP public thường là khoản gây bất ngờ."
+              href="/playground/cloud/cost"
+              action="Mở Cost Estimator"
+              icon={<Receipt size={26} />}
+            />
+          </div>
         </section>
 
         <section className="mt-12" aria-labelledby="quick-experiments-heading">
