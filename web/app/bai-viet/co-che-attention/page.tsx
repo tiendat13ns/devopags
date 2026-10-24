@@ -5,112 +5,169 @@ import { AttentionWeightExplorer } from '@/components/attention-weight-explorer'
 export const metadata: Metadata = {
   title: 'Cơ chế Attention | tiendat13ns',
   description:
-    'Cách mình hiểu attention: Query, Key, Value, scaled dot-product, self-attention, cross-attention, mask và multi-head attention.',
+    'Cách mình hiểu Attention từ Query, Key, Value, scaled dot-product và masking đến multi-head attention, shape tensor và giới hạn khi diễn giải attention weight.',
 };
 
-const attentionCode = `import torch
+const attentionCode = `import math
+import torch
 import torch.nn.functional as F
 
-def scaled_dot_product_attention(q, k, v, mask=None):
-    d_k = q.size(-1)
-    scores = q @ k.transpose(-2, -1) / (d_k ** 0.5)
+def attention(q, k, v, mask=None):
+    # q: [B, H, Tq, Dh]
+    # k: [B, H, Tk, Dh]
+    # v: [B, H, Tk, Dv]
+    scores = q @ k.transpose(-2, -1)
+    scores = scores / math.sqrt(q.size(-1))
 
     if mask is not None:
-        scores = scores.masked_fill(mask == 0, float('-inf'))
+        scores = scores.masked_fill(~mask, float("-inf"))
 
     weights = F.softmax(scores, dim=-1)
     context = weights @ v
-    return context, weights`;
+    return context, weights
+
+# Khi không cần lấy weights thủ công:
+context = F.scaled_dot_product_attention(
+    q, k, v, attn_mask=mask, dropout_p=0.0
+)`;
 
 export default function AttentionArticle() {
   return (
     <ArticleShell currentHref="/bai-viet/co-che-attention">
       <ArticleIntro
-        eyebrow="AI · SEQUENCE MODEL"
+        eyebrow="DEEP LEARNING · SEQUENCE MODEL"
         title="Cơ chế Attention"
-        description="Attention cho phép mỗi token chủ động tìm những token liên quan, quyết định nên đọc bao nhiêu thông tin từ từng vị trí rồi trộn chúng thành một representation mới."
-        date="23/09/2026"
-        readTime="15 phút đọc"
+        description="Attention không phải phép tìm kiếm bí ẩn. Nó chấm điểm độ phù hợp giữa Query và Key, chuẩn hóa điểm thành trọng số rồi dùng chúng để trộn các Value thành representation mới."
+        date="25/09/2026"
+        readTime="18 phút đọc"
         tags={['AI', 'Deep Learning', 'Attention']}
       />
 
-      <ArticleSection id="van-de-cua-mot-vector" number="1" title="Vấn đề khi nén cả chuỗi vào một vector">
+      <ArticleSection id="tai-sao-can-attention" number="1" title="Nút thắt của một vector cố định">
         <p>
-          Trong encoder–decoder RNN cổ điển, encoder thường phải nén toàn bộ câu nguồn vào final hidden state. Với chuỗi
-          dài, một vector cố định trở thành nút thắt: thông tin ở đầu câu phải đi qua nhiều timestep trước khi đến decoder.
+          Trong encoder–decoder RNN đời đầu, encoder phải nén cả câu nguồn vào final hidden state. Câu càng dài, vector cố
+          định này càng phải gánh nhiều thông tin; chi tiết ở đầu câu còn phải đi qua rất nhiều timestep mới tới được decoder.
         </p>
         <p>
-          Attention thay đổi cách làm này. Thay vì chỉ nhận một bản tóm tắt, decoder có thể nhìn lại toàn bộ output của
-          encoder và chọn phần liên quan cho từng token đang sinh. Sau đó ý tưởng này được mở rộng thành self-attention,
-          nơi các token trong cùng một chuỗi đọc lẫn nhau.
+          Bahdanau và cộng sự thay cách truyền thông tin đó bằng một phép <strong>soft search</strong>: ở mỗi bước sinh,
+          decoder nhìn lại toàn bộ encoder state và lấy nhiều hay ít thông tin từ từng vị trí. Attention ban đầu vì thế là
+          một lối thoát khỏi bottleneck của fixed-length context, trước khi trở thành thành phần trung tâm của Transformer.
         </p>
-      </ArticleSection>
-
-      <ArticleSection id="truc-giac-attention" number="2" title="Trực giác: tìm, so khớp và lấy thông tin">
-        <p>
-          Mình ghi nhớ attention bằng ba câu hỏi. <strong>Query</strong> mô tả thông tin token hiện tại đang tìm.
-          <strong> Key</strong> mô tả mỗi token có thể được tìm thấy bằng đặc điểm nào. <strong>Value</strong> là nội dung
-          thực sự được lấy về nếu Query và Key phù hợp.
-        </p>
-        <AttentionWeightExplorer />
-        <p>
-          Các phần trăm trong mô phỏng chỉ dùng để minh họa. Trong model thật, Q, K và V là vector được tạo bởi ba phép
-          chiếu tuyến tính có parameter học được. Attention weight cũng thay đổi theo input và theo từng layer.
-        </p>
-      </ArticleSection>
-
-      <ArticleSection id="q-k-v" number="3" title="Q, K và V được tạo ra thế nào?">
-        <p>
-          Giả sử input embedding là ma trận <code className="inline-code">X ∈ ℝᵀˣᴰ</code>. Model nhân X với ba ma trận
-          weight khác nhau:
-        </p>
-        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
-          <code>{`Q = XWq\nK = XWk\nV = XWv`}</code>
-        </pre>
-        <p>
-          Khi self-attention, Q, K và V cùng xuất phát từ một chuỗi. Với cross-attention, Q thường đến từ decoder còn K,
-          V đến từ encoder output. Tách ba vai trò này giúp model học một không gian để so khớp và một không gian khác để
-          mang nội dung.
-        </p>
-      </ArticleSection>
-
-      <ArticleSection id="scaled-dot-product" number="4" title="Scaled dot-product attention">
-        <p>
-          Attention lấy dot product giữa từng Query và tất cả Key. Điểm càng lớn nghĩa là hai vector càng phù hợp. Softmax
-          đổi score thành trọng số có tổng bằng 1, rồi dùng các trọng số đó để lấy weighted sum của Value.
-        </p>
-        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
-          <code>{`Attention(Q, K, V) = softmax(QKᵀ / √dₖ)V`}</code>
-        </pre>
-        <p>
-          Chia cho <code className="inline-code">√dₖ</code> giữ score không tăng quá lớn khi chiều vector tăng. Nếu score
-          quá lớn, softmax dễ bão hòa, xác suất gần như dồn hết vào một vị trí và gradient trở nên kém hữu ích.
-        </p>
-      </ArticleSection>
-
-      <ArticleSection id="self-va-cross-attention" number="5" title="Self-attention và cross-attention">
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className="border border-border bg-card p-5">
-            <p className="font-mono text-xs font-semibold text-primary">SELF-ATTENTION</p>
-            <h3 className="mt-2 text-base font-semibold text-ink">Một chuỗi đọc chính nó</h3>
-            <p className="mt-2 text-sm leading-6">Q, K, V cùng đến từ input. Mỗi token tạo representation có ngữ cảnh từ các token còn lại.</p>
+        <div className="my-6 grid gap-px border border-border bg-border md:grid-cols-2">
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">KHÔNG ATTENTION</p>
+            <p className="mt-3 font-mono text-sm text-ink">source → một context vector → decoder</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Mọi thông tin phải đi qua cùng một nút thắt.</p>
           </div>
-          <div className="border border-border bg-card p-5">
-            <p className="font-mono text-xs font-semibold text-primary">CROSS-ATTENTION</p>
-            <h3 className="mt-2 text-base font-semibold text-ink">Một chuỗi đọc chuỗi khác</h3>
-            <p className="mt-2 text-sm leading-6">Q đến từ decoder; K, V đến từ encoder hoặc nguồn dữ liệu khác.</p>
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">CÓ ATTENTION</p>
+            <p className="mt-3 font-mono text-sm text-ink">query → so khớp toàn bộ memory → context</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Mỗi bước tự chọn phần memory liên quan.</p>
           </div>
         </div>
       </ArticleSection>
 
-      <ArticleSection id="attention-mask" number="6" title="Mask quyết định token được phép nhìn đâu">
+      <ArticleSection id="query-key-value" number="2" title="Query hỏi, Key để so khớp, Value mang nội dung">
         <p>
-          Padding mask chặn các vị trí padding để chúng không đóng góp vào context. Causal mask chặn token tương lai:
-          khi dự đoán token thứ t, model chỉ được nhìn các vị trí từ 1 đến t. Cách triển khai phổ biến là đặt score bị chặn
-          thành âm vô cùng trước softmax, khiến attention weight tại đó bằng 0.
+          Mình ghi nhớ Q–K–V bằng một API tìm kiếm. <strong>Query</strong> mô tả thứ đang cần; <strong>Key</strong> mô tả
+          đặc điểm có thể dùng để đối chiếu; <strong>Value</strong> là payload thực sự được lấy về. Query không trực tiếp
+          trộn với Value: nó dùng Key để quyết định mỗi Value đóng góp bao nhiêu.
+        </p>
+        <AttentionWeightExplorer />
+        <p>
+          Các tỷ lệ trong mô phỏng chỉ để nhìn luồng tính toán. Trong model thật, Q, K và V là vector được tạo bởi ba phép
+          chiếu tuyến tính có parameter học được, nên attention pattern thay đổi theo input, head và layer.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="qkv-tu-input" number="3" title="Từ embedding tới ma trận Q, K và V">
+        <p>
+          Với input <code className="inline-code">X ∈ ℝᴮˣᵀˣᴰ</code>, self-attention tạo ba representation:
+        </p>
+        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
+          <code>{`Q = XWq
+K = XWk
+V = XWv`}</code>
+        </pre>
+        <div className="my-6 overflow-x-auto border border-border bg-card">
+          <table className="w-full min-w-[680px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-border bg-primary-soft text-primary-dark">
+                <th className="px-4 py-3">Tensor</th>
+                <th className="px-4 py-3">Shape theo từng head</th>
+                <th className="px-4 py-3">Ý nghĩa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Q', '[B, H, Tq, Dh]', 'Mỗi query token đang cần gì'],
+                ['K', '[B, H, Tk, Dh]', 'Mỗi memory position có đặc điểm gì'],
+                ['QKᵀ', '[B, H, Tq, Tk]', 'Score giữa mọi cặp query–key'],
+                ['softmax(score)', '[B, H, Tq, Tk]', 'Trọng số trên trục key'],
+                ['Attention output', '[B, H, Tq, Dv]', 'Weighted sum của Value'],
+              ].map((row) => (
+                <tr key={row[0]} className="border-b border-border last:border-0">
+                  <td className="px-4 py-3 font-mono font-semibold text-primary">{row[0]}</td>
+                  <td className="px-4 py-3 font-mono text-muted-foreground">{row[1]}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{row[2]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Self-attention có <code className="inline-code">Tq = Tk</code>. Cross-attention không bắt buộc như vậy: số query
+          của decoder có thể khác số key/value trong encoder memory.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="scaled-dot-product" number="4" title="Scaled dot-product attention theo từng bước">
+        <p>
+          Công thức trong paper gốc gói bốn thao tác vào một dòng:
+        </p>
+        <div className="my-6 border border-border bg-card p-5 text-center font-mono text-base text-primary">
+          Attention(Q, K, V) = softmax(QKᵀ / √dₖ)V
+        </div>
+        <ol className="space-y-3 pl-5">
+          <li><strong>Dot product:</strong> đo độ phù hợp giữa từng Query với tất cả Key.</li>
+          <li><strong>Scale:</strong> chia score cho √dₖ để giữ độ lớn ổn định khi head dimension tăng.</li>
+          <li><strong>Softmax:</strong> đổi mỗi hàng score thành phân phối có tổng bằng 1.</li>
+          <li><strong>Weighted sum:</strong> dùng phân phối đó để trộn các Value.</li>
+        </ol>
+        <p>
+          Nếu các thành phần của q và k có mean 0, variance 1 và gần độc lập, dot product có variance xấp xỉ dₖ. Không
+          scale, dₖ càng lớn thì score càng dễ đẩy softmax vào vùng gần one-hot, nơi gradient rất nhỏ. Chia cho √dₖ đưa
+          variance về thang dễ tối ưu hơn.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="ba-cach-dung-attention" number="5" title="Ba cách Attention xuất hiện trong Transformer gốc">
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="border border-border bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">ENCODER</p>
+            <h3 className="mt-2 text-base font-semibold text-ink">Self-attention</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Q, K, V cùng đến từ encoder layer trước; mọi input position có thể đọc nhau.</p>
+          </div>
+          <div className="border border-border bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">DECODER</p>
+            <h3 className="mt-2 text-base font-semibold text-ink">Masked self-attention</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Q, K, V cùng từ decoder nhưng token t không được nhìn vị trí tương lai.</p>
+          </div>
+          <div className="border border-border bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">ENCODER → DECODER</p>
+            <h3 className="mt-2 text-base font-semibold text-ink">Cross-attention</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Q từ decoder; K và V là memory do encoder tạo ra.</p>
+          </div>
+        </div>
+      </ArticleSection>
+
+      <ArticleSection id="mask" number="6" title="Mask thay đổi những kết nối được phép tồn tại">
+        <p>
+          Padding mask loại token đệm khỏi phép trộn. Causal mask chặn tương lai để bài toán next-token prediction không
+          nhìn trộm đáp án. Cách phổ biến là cộng âm vô cùng vào score bị chặn trước softmax, khiến weight tại đó về 0.
         </p>
         <div className="my-6 overflow-x-auto border border-border bg-card p-4">
-          <div className="grid min-w-[500px] grid-cols-5 gap-1 font-mono text-center text-xs">
+          <div className="grid min-w-[520px] grid-cols-5 gap-1 font-mono text-center text-xs">
             {Array.from({ length: 25 }, (_, index) => {
               const row = Math.floor(index / 5);
               const column = index % 5;
@@ -122,55 +179,121 @@ export default function AttentionArticle() {
               );
             })}
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">Causal mask tạo ma trận tam giác dưới: mỗi hàng chỉ nhìn chính nó và quá khứ.</p>
+          <p className="mt-3 text-sm text-muted-foreground">Mỗi hàng là một Query; causal mask chỉ giữ đường chéo và phần bên trái.</p>
         </div>
-      </ArticleSection>
-
-      <ArticleSection id="multi-head" number="7" title="Multi-head attention">
         <p>
-          Một attention head chỉ tạo một kiểu không gian Q–K–V. Multi-head attention chia representation thành nhiều
-          head, để các head có thể học những quan hệ khác nhau: token gần nhau, quan hệ cú pháp, tham chiếu xa hoặc pattern
-          theo domain. Output của các head được nối lại rồi chiếu qua một linear layer.
-        </p>
-        <p>
-          Không nên hiểu mỗi head luôn có một ý nghĩa cố định và dễ gọi tên. Một số pattern có thể quan sát được, nhưng
-          representation thường phân tán qua nhiều head và layer.
+          Khi dùng API, cần đọc kỹ quy ước boolean mask. Chẳng hạn PyTorch SDPA và
+          <code className="inline-code">nn.MultiheadAttention</code> dùng ý nghĩa True/False khác nhau cho một số loại mask.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="chi-phi" number="8" title="Attention đổi memory lấy khả năng nhìn xa">
+      <ArticleSection id="multi-head" number="7" title="Multi-head tạo nhiều không gian so khớp">
         <p>
-          Full self-attention tạo ma trận score kích thước T × T, nên chi phí theo chiều dài chuỗi thường là
-          <code className="inline-code">O(T²)</code>. Đổi lại, mỗi token có đường kết nối trực tiếp tới mọi token khác và
-          các vị trí có thể được tính song song khi training.
+          Thay vì một attention trên toàn bộ d_model, model chiếu Q, K, V sang H không gian nhỏ hơn, chạy H head song song,
+          nối kết quả và chiếu thêm một lần:
         </p>
+        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
+          <code>{`headᵢ = Attention(QWqᵢ, KWkᵢ, VWvᵢ)
+MultiHead(Q,K,V) = Concat(head₁,…,headₕ)Wo`}</code>
+        </pre>
         <p>
-          Với context dài, ma trận attention có thể chiếm nhiều memory hơn parameter của layer. FlashAttention, local
-          attention, sliding window và sparse attention là các hướng tối ưu cách tính hoặc giới hạn số cặp token cần xét.
+          Bản base trong paper dùng d_model = 512, H = 8 và head dimension 64. Nhiều head cho phép model tạo các pattern
+          khác nhau ở những representation subspace khác nhau, nhưng không nên gán cứng mỗi head với một “vai trò ngôn
+          ngữ” cố định.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="code-attention" number="9" title="Attention tối giản bằng PyTorch">
+      <ArticleSection id="tai-sao-self-attention" number="8" title="Self-attention rút ngắn đường đi giữa token">
         <p>
-          Đoạn code dưới đây bộc lộ đúng bốn bước: tính score, scale, áp mask, softmax rồi trộn Value. Code production còn
-          cần xử lý nhiều head, dropout, dtype và kernel tối ưu.
+          Paper so sánh ba yếu tố: chi phí mỗi layer, số phép tính tuần tự và path length lớn nhất giữa hai vị trí. Với full
+          self-attention, mọi cặp token kết nối trong một layer và các vị trí được tính song song.
+        </p>
+        <div className="my-6 overflow-x-auto border border-border bg-card">
+          <table className="w-full min-w-[690px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-border bg-primary-soft text-primary-dark">
+                <th className="px-4 py-3">Layer</th>
+                <th className="px-4 py-3">Complexity</th>
+                <th className="px-4 py-3">Sequential operations</th>
+                <th className="px-4 py-3">Max path</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Self-attention', 'O(n²·d)', 'O(1)', 'O(1)'],
+                ['Recurrent', 'O(n·d²)', 'O(n)', 'O(n)'],
+                ['Convolutional', 'O(k·n·d²)', 'O(1)', 'O(logₖ n)'],
+                ['Restricted attention', 'O(r·n·d)', 'O(1)', 'O(n/r)'],
+              ].map((row) => (
+                <tr key={row[0]} className="border-b border-border last:border-0">
+                  <td className="px-4 py-3 font-semibold text-ink">{row[0]}</td>
+                  <td className="px-4 py-3 font-mono text-muted-foreground">{row[1]}</td>
+                  <td className="px-4 py-3 font-mono text-muted-foreground">{row[2]}</td>
+                  <td className="px-4 py-3 font-mono text-muted-foreground">{row[3]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Đổi lại, score matrix có kích thước T × T. Context dài làm compute tăng bậc hai và bản triển khai ngây thơ còn
+          materialize ma trận lớn trong memory.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="attention-khong-phai-giai-thich" number="9" title="Attention weight không tự động là lời giải thích">
+        <p>
+          Heatmap attention rất hữu ích để quan sát model đang kết nối vị trí nào. Paper gốc cũng cho thấy một số head bám
+          dependency xa hoặc pattern cú pháp. Nhưng weight cao không chứng minh token đó là nguyên nhân của prediction.
+        </p>
+        <p>
+          Nghiên cứu sau đó tìm thấy attention weight có thể ít tương quan với gradient-based importance, và những phân
+          phối attention rất khác nhau đôi khi vẫn cho output gần tương đương. Vì vậy mình dùng attention map như một
+          tín hiệu chẩn đoán, không dùng nó một mình để kết luận model “đã suy luận như con người”.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="code-attention" number="10" title="Attention tối giản bằng PyTorch">
+        <p>
+          Bản thủ công dưới đây để nhìn rõ phép tính. Trong code thực tế, API
+          <code className="inline-code">scaled_dot_product_attention</code> có thể chọn kernel fused phù hợp với input và
+          phần cứng, thay vì bắt buộc tạo đầy đủ các tensor trung gian theo cách ngây thơ.
         </p>
         <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
           <code>{attentionCode}</code>
         </pre>
       </ArticleSection>
 
-      <ArticleSection id="ghi-nho-attention" number="10" title="Cách mình ghi nhớ Attention">
+      <ArticleSection id="flash-attention" number="11" title="FlashAttention tối ưu đường đi của dữ liệu, không đổi công thức">
         <p>
-          Attention không phải một database search và attention weight không tự động là lời giải thích hoàn chỉnh cho dự
-          đoán. Về mặt tính toán, nó là phép trộn Value có trọng số; các trọng số được sinh từ độ phù hợp giữa Query và Key.
-          Điểm mạnh nằm ở việc quan hệ được tạo theo từng input, thay vì bị cố định bởi khoảng cách timestep như RNN.
+          FlashAttention vẫn tính exact attention. Điểm mới là chia phép tính thành tile để giảm số lần đọc/ghi giữa HBM
+          và SRAM trên GPU. Nó giải quyết bottleneck I/O và tránh materialize toàn bộ attention matrix trong memory,
+          nhưng số cặp query–key của full attention vẫn tăng theo T².
+        </p>
+        <p>
+          Đây là phân biệt quan trọng: tối ưu kernel có thể giảm memory thực tế và thời gian chạy mà không biến full
+          attention thành một thuật toán tuyến tính theo sequence length.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="tai-lieu" number="11" title="Đọc thêm">
+      <ArticleSection id="ghi-nho-attention" number="12" title="Cách mình ghi nhớ Attention">
+        <p>
+          Query chọn góc nhìn, Key cung cấp điểm đối chiếu, Value mang thông tin. Dot product tạo score, scale giữ softmax
+          ổn định, mask loại kết nối không hợp lệ, còn multi-head lặp quy trình trong nhiều representation subspace.
+        </p>
+        <p>
+          Attention là phép trộn thông tin phụ thuộc vào input. Transformer là kiến trúc đặt phép trộn đó cạnh residual,
+          normalization và feed-forward network để có thể xếp thành một mạng sâu.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="tai-lieu" number="13" title="Nguồn tham khảo">
         <ul className="space-y-3">
+          <ReferenceLink href="https://arxiv.org/abs/1409.0473" label="Bahdanau, Cho & Bengio — Neural Machine Translation by Jointly Learning to Align and Translate" />
           <ReferenceLink href="https://arxiv.org/abs/1706.03762" label="Vaswani et al. — Attention Is All You Need" />
+          <ReferenceLink href="https://arxiv.org/abs/1902.10186" label="Jain & Wallace — Attention is not Explanation" />
+          <ReferenceLink href="https://arxiv.org/abs/2205.14135" label="Dao et al. — FlashAttention" />
+          <ReferenceLink href="https://docs.pytorch.org/docs/main/generated/torch.nn.functional.scaled_dot_product_attention.html" label="PyTorch — scaled_dot_product_attention" />
         </ul>
       </ArticleSection>
     </ArticleShell>

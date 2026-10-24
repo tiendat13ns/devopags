@@ -5,195 +5,331 @@ import { TransformerFlowExplorer } from '@/components/transformer-flow-explorer'
 export const metadata: Metadata = {
   title: 'Kiến trúc Transformer | tiendat13ns',
   description:
-    'Cách mình hiểu Transformer: embedding, positional encoding, multi-head attention, residual, normalization, feed-forward, encoder và decoder.',
+    'Đọc Transformer từ paper gốc: encoder–decoder stack, positional encoding, multi-head attention, residual, layer norm, FFN, masking, training và inference.',
 };
 
 const encoderCode = `import torch.nn as nn
 
 layer = nn.TransformerEncoderLayer(
-    d_model=256,
+    d_model=512,
     nhead=8,
-    dim_feedforward=1024,
+    dim_feedforward=2048,
     dropout=0.1,
+    activation="relu",
     batch_first=True,
-    norm_first=True,
+    norm_first=False,  # post-norm như paper 2017
 )
 
-encoder = nn.TransformerEncoder(layer, num_layers=6)
-output = encoder(embeddings, src_key_padding_mask=padding_mask)
-# embeddings: [batch, sequence, 256]
-# output:     [batch, sequence, 256]`;
+encoder = nn.TransformerEncoder(
+    encoder_layer=layer,
+    num_layers=6,
+)
+
+output = encoder(
+    embeddings_with_position,
+    src_key_padding_mask=padding_mask,
+)
+# input/output: [batch, sequence, 512]`;
 
 export default function TransformerArticle() {
   return (
     <ArticleShell currentHref="/bai-viet/kien-truc-transformer">
       <ArticleIntro
-        eyebrow="AI · FOUNDATION MODEL"
+        eyebrow="DEEP LEARNING · ARCHITECTURE"
         title="Kiến trúc Transformer"
-        description="Transformer xếp attention, residual connection, normalization và feed-forward network thành các block có thể lặp sâu. Kiến trúc này xử lý cả chuỗi song song khi training và là nền tảng của nhiều model ngôn ngữ, thị giác và đa phương thức."
-        date="23/09/2026"
-        readTime="17 phút đọc"
+        description="Transformer không chỉ là Attention. Paper gốc ghép multi-head attention với positional encoding, residual connection, layer normalization và feed-forward network thành encoder–decoder có thể train song song theo chiều sequence."
+        date="25/09/2026"
+        readTime="20 phút đọc"
         tags={['AI', 'Deep Learning', 'Transformer']}
       />
 
-      <ArticleSection id="tu-rnn-den-transformer" number="1" title="Từ RNN đến Transformer">
+      <ArticleSection id="transformer-thay-doi-dieu-gi" number="1" title="Transformer bỏ recurrence khỏi đường truyền chính">
         <p>
-          RNN đọc token lần lượt nên hidden state của bước t phải đợi bước t−1. Cách làm này tự nhiên với streaming nhưng
-          khó tận dụng GPU khi training chuỗi dài, và thông tin xa phải đi qua nhiều phép biến đổi liên tiếp.
+          RNN tạo hidden state của bước t từ hidden state t−1, nên training trong một sequence có dependency tuần tự.
+          Transformer thay recurrence bằng self-attention: mọi vị trí tạo Query, Key, Value và trao đổi thông tin trong cùng
+          một phép tính ma trận.
         </p>
         <p>
-          Transformer bỏ recurrence khỏi block chính. Self-attention cho phép mỗi token kết nối trực tiếp với các token
-          khác; toàn bộ vị trí có thể được tính cùng lúc trong training. Đổi lại, model phải được cung cấp thông tin vị trí
-          và chi phí full attention tăng theo bình phương sequence length.
+          Điều này mang lại hai thay đổi. Các vị trí được xử lý song song khi training, và đường đi giữa hai token xa nhau
+          rút xuống một attention layer. Cái giá là model không còn tự mang thứ tự như RNN và full attention phải xét T²
+          cặp token.
         </p>
+        <div className="my-6 grid gap-px border border-border bg-border md:grid-cols-3">
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">RNN</p>
+            <p className="mt-3 font-mono text-sm text-ink">h₁ → h₂ → … → hₜ</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">O(T) bước tuần tự.</p>
+          </div>
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">SELF-ATTENTION</p>
+            <p className="mt-3 font-mono text-sm text-ink">mọi token ↔ mọi token</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">O(1) bước tuần tự mỗi layer.</p>
+          </div>
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">TRADE-OFF</p>
+            <p className="mt-3 font-mono text-sm text-ink">score matrix [T, T]</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Compute tăng bậc hai theo T.</p>
+          </div>
+        </div>
       </ArticleSection>
 
-      <ArticleSection id="luong-du-lieu" number="2" title="Luồng dữ liệu qua Transformer">
+      <ArticleSection id="luong-du-lieu" number="2" title="Luồng dữ liệu qua ba họ Transformer">
         <p>
-          Transformer không chỉ có một dạng. Encoder-only phù hợp để hiểu input, decoder-only phù hợp để sinh token, còn
-          encoder–decoder tách chuỗi nguồn và chuỗi đích. Chọn từng chế độ bên dưới để xem các block thay đổi ra sao.
+          Paper năm 2017 trình bày encoder–decoder cho machine translation. Encoder-only và decoder-only là những cách giữ
+          lại từng nửa của ý tưởng đó cho các mục tiêu khác. Chọn từng chế độ để xem đường đi của tensor.
         </p>
         <TransformerFlowExplorer />
       </ArticleSection>
 
-      <ArticleSection id="embedding-va-position" number="3" title="Token embedding cần thông tin vị trí">
+      <ArticleSection id="paper-goc-trong-cac-con-so" number="3" title="Kiến trúc base trong paper gốc">
         <p>
-          Token ID được tra trong embedding table để thành vector D chiều. Self-attention thuần túy không tự biết token
-          nào đứng trước hoặc sau, nên Transformer cộng hoặc kết hợp thêm positional encoding vào embedding.
+          Để tránh lẫn paper gốc với các LLM hiện đại, mình giữ riêng cấu hình Transformer base được Vaswani và cộng sự
+          mô tả:
+        </p>
+        <div className="my-6 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ['N', '6 encoder + 6 decoder layer'],
+            ['d_model', '512'],
+            ['Heads', '8 × 64 chiều'],
+            ['d_ff', '2048'],
+            ['Norm', 'Post-norm'],
+            ['Activation', 'ReLU'],
+            ['Dropout', '0.1'],
+            ['Parameters', 'Khoảng 65M'],
+          ].map(([name, value]) => (
+            <div key={name} className="bg-card p-4">
+              <span className="font-mono text-xs text-primary">{name}</span>
+              <strong className="mt-2 block text-sm leading-6 text-ink">{value}</strong>
+            </div>
+          ))}
+        </div>
+        <p>
+          Những con số này là một mốc lịch sử, không phải quy tắc bắt buộc. Model sau này thay depth, width, activation,
+          normalization order, positional method, số KV head và nhiều chi tiết khác.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="embedding-position" number="4" title="Không có recurrence thì phải đưa vị trí vào input">
+        <p>
+          Token ID được tra thành embedding D chiều. Self-attention thuần túy không phân biệt hoán vị: đổi thứ tự token mà
+          không thêm tín hiệu vị trí sẽ chỉ đổi thứ tự output tương ứng. Vì vậy input của layer đầu là tổng token embedding
+          và positional encoding.
         </p>
         <div className="my-6 grid gap-px border border-border bg-border sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-stretch">
           <div className="bg-card p-4">
             <p className="font-mono text-xs text-primary">TOKEN</p>
             <strong className="mt-2 block text-sm text-ink">Nội dung</strong>
-            <p className="mt-2 text-sm leading-6">Vector học được cho mỗi token.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Vector học được cho token.</p>
           </div>
           <span className="hidden place-items-center bg-card px-2 font-mono text-primary sm:grid">+</span>
           <div className="bg-card p-4">
             <p className="font-mono text-xs text-primary">POSITION</p>
             <strong className="mt-2 block text-sm text-ink">Thứ tự</strong>
-            <p className="mt-2 text-sm leading-6">Sinusoidal, learned hoặc rotary position.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Sin/cos trong paper gốc.</p>
           </div>
           <span className="hidden place-items-center bg-card px-2 font-mono text-primary sm:grid">→</span>
           <div className="bg-primary-soft p-4">
             <p className="font-mono text-xs text-primary-dark">INPUT</p>
             <strong className="mt-2 block text-sm text-primary-dark">[B, T, D]</strong>
-            <p className="mt-2 text-sm leading-6 text-primary-dark">Đi vào Transformer block.</p>
+            <p className="mt-2 text-sm leading-6 text-primary-dark">Đi vào stack.</p>
           </div>
         </div>
+        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
+          <code>{`PE(pos, 2i)     = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i + 1) = cos(pos / 10000^(2i/d_model))`}</code>
+        </pre>
+        <p>
+          Paper báo cáo learned positional embedding và sinusoidal encoding cho kết quả gần tương đương trong thử nghiệm
+          của họ. Sinusoidal được chọn vì giả thuyết rằng nó có thể hỗ trợ extrapolate sang sequence dài hơn lúc train.
+        </p>
       </ArticleSection>
 
-      <ArticleSection id="transformer-block" number="4" title="Bên trong một Transformer block">
+      <ArticleSection id="encoder-block" number="5" title="Encoder layer có hai sublayer">
         <p>
-          Một block thường có hai phần lớn: multi-head attention để trao đổi thông tin giữa token, và feed-forward network
-          để biến đổi representation tại từng token. Mỗi phần được đặt cạnh residual connection và normalization.
+          Mỗi encoder layer gồm multi-head self-attention và position-wise feed-forward network. Paper gốc đặt residual
+          quanh từng sublayer rồi mới LayerNorm:
         </p>
         <div className="my-6 overflow-x-auto border border-border bg-card p-4">
-          <div className="flex min-w-[680px] items-center gap-2 font-mono text-xs">
-            {['Input x', 'Norm', 'Attention', '+ x', 'Norm', 'FFN', '+ residual', 'Output'].map((item, index, items) => (
+          <div className="flex min-w-[760px] items-center gap-2 font-mono text-xs">
+            {['Input x', 'Multi-head self-attention', 'Dropout', '+ x', 'LayerNorm', 'FFN', 'Dropout', '+ residual', 'LayerNorm'].map((item, index, items) => (
               <div key={`${item}-${index}`} className="contents">
-                <span className={`border px-3 py-3 ${item.includes('+') ? 'border-primary bg-primary-soft text-primary-dark' : 'border-border bg-surface text-ink'}`}>{item}</span>
+                <span className={`border px-3 py-3 ${item.startsWith('+') ? 'border-primary bg-primary-soft text-primary-dark' : 'border-border bg-surface text-ink'}`}>{item}</span>
                 {index < items.length - 1 ? <span className="text-primary">→</span> : null}
               </div>
             ))}
           </div>
         </div>
-        <p>
-          Pre-norm đặt normalization trước attention/FFN; post-norm đặt sau residual. Pre-norm thường giúp gradient ổn
-          định hơn khi xếp nhiều layer, nhưng lựa chọn thực tế còn tùy họ model.
-        </p>
-      </ArticleSection>
-
-      <ArticleSection id="multi-head-attention" number="5" title="Multi-head attention trong block">
-        <p>
-          Với model dimension D và H head, mỗi head thường xử lý vector kích thước <code className="inline-code">D/H</code>.
-          Các head tính attention song song, nối output lại thành D chiều rồi đi qua output projection.
-        </p>
-        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
-          <code>{`Q, K, V: [B, T, D]\nreshape: [B, H, T, D/H]\nscores:  [B, H, T, T]\noutput:  [B, T, D]`}</code>
-        </pre>
-        <p>
-          Shape <code className="inline-code">[B, H, T, T]</code> giải thích vì sao attention matrix tốn memory khi T
-          lớn. Multi-head không làm mất dimension tổng, nhưng tạo nhiều không gian so khớp độc lập.
-        </p>
-      </ArticleSection>
-
-      <ArticleSection id="feed-forward" number="6" title="Feed-forward network xử lý từng token">
-        <p>
-          Sau khi attention trao đổi thông tin giữa vị trí, FFN áp dụng cùng một MLP lên từng token. Cấu trúc phổ biến là
-          mở rộng D lên <code className="inline-code">Dff</code>, dùng activation rồi chiếu về D. GELU, SwiGLU và các gated
-          activation thường xuất hiện trong model hiện đại.
-        </p>
         <div className="my-6 border-l-2 border-primary bg-primary-soft px-4 py-3 font-mono text-sm leading-7 text-primary-dark">
-          FFN(x) = W₂ · activation(W₁x + b₁) + b₂
+          output = LayerNorm(x + Sublayer(x))
         </div>
         <p>
-          Attention trộn thông tin giữa token; FFN trộn thông tin giữa các feature bên trong từng token. Hai phép biến đổi
-          đảm nhận hai loại tương tác khác nhau.
+          Đây là <strong>post-norm</strong>. Nhiều model hiện đại dùng pre-norm
+          <code className="inline-code">x + Sublayer(LayerNorm(x))</code> để train mạng sâu ổn định hơn. Hai cách không nên
+          bị vẽ lẫn thành cùng một block.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="ba-ho-transformer" number="7" title="Encoder-only, decoder-only và encoder–decoder">
+      <ArticleSection id="decoder-block" number="6" title="Decoder thêm masking và cross-attention">
+        <p>
+          Decoder layer có ba sublayer: masked self-attention, encoder–decoder attention và FFN. Causal mask đảm bảo vị trí
+          i chỉ phụ thuộc các output token trước i; target embedding còn được shift sang phải một vị trí.
+        </p>
+        <div className="my-6 grid gap-px border border-border bg-border md:grid-cols-3">
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">1 · MASKED SELF</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Decoder đọc prefix đã có, không nhìn token tương lai.</p>
+          </div>
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">2 · CROSS</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Q từ decoder; K và V từ encoder output.</p>
+          </div>
+          <div className="bg-card p-5">
+            <p className="font-mono text-xs font-semibold text-primary">3 · FFN</p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">Biến đổi feature độc lập tại từng vị trí.</p>
+          </div>
+        </div>
+      </ArticleSection>
+
+      <ArticleSection id="multi-head-shape" number="7" title="Shape của multi-head attention">
+        <p>
+          Với D = 512 và H = 8, mỗi head trong paper base dùng head dimension 64. Model reshape tensor để đưa head thành
+          một trục riêng, tính attention song song rồi ghép trở lại:
+        </p>
+        <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
+          <code>{`input:   [B, T, D]
+Q, K, V: [B, H, T, Dh]
+scores:  [B, H, Tq, Tk]
+context: [B, H, Tq, Dv]
+concat:  [B, Tq, H × Dv]
+output:  [B, Tq, D]`}</code>
+        </pre>
+        <p>
+          Chia thành nhiều head không làm tăng tổng model dimension nếu H × Dh = D. Mục tiêu là cho model nhiều không gian
+          chiếu để so khớp, thay vì ép mọi quan hệ vào một attention map duy nhất.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="feed-forward" number="8" title="FFN biến đổi feature tại từng token">
+        <p>
+          Attention trộn thông tin giữa các vị trí; FFN trộn các feature bên trong representation của từng vị trí. Paper
+          gốc dùng hai linear layer với ReLU, mở rộng 512 lên 2048 rồi nén lại:
+        </p>
+        <div className="my-6 border-l-2 border-primary bg-primary-soft px-4 py-3 font-mono text-sm leading-7 text-primary-dark">
+          FFN(x) = max(0, xW₁ + b₁)W₂ + b₂
+        </div>
+        <p>
+          Cùng một FFN được dùng cho mọi position trong một layer, nhưng layer khác có parameter khác. Transformer vì vậy
+          không phải “chỉ có attention”: residual và MLP ngăn representation suy biến và tạo thêm năng lực biến đổi phi
+          tuyến.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="ba-ho-transformer" number="9" title="Ba họ Transformer phổ biến">
         <div className="grid gap-3 md:grid-cols-3">
           <div className="border border-border bg-card p-5">
             <p className="font-mono text-xs font-semibold text-primary">ENCODER-ONLY</p>
             <h3 className="mt-2 text-base font-semibold text-ink">Hiểu input</h3>
-            <p className="mt-2 text-sm leading-6">Bidirectional self-attention. Phù hợp classification, retrieval, embedding và token labeling.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Bidirectional attention; phù hợp embedding, classification, retrieval và token labeling.</p>
           </div>
           <div className="border border-border bg-card p-5">
             <p className="font-mono text-xs font-semibold text-primary">DECODER-ONLY</p>
             <h3 className="mt-2 text-base font-semibold text-ink">Sinh tiếp chuỗi</h3>
-            <p className="mt-2 text-sm leading-6">Causal self-attention. Dự đoán token kế tiếp và là cấu trúc phổ biến của LLM.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Causal attention; dự đoán token kế tiếp và là cấu trúc phổ biến của LLM.</p>
           </div>
           <div className="border border-border bg-card p-5">
             <p className="font-mono text-xs font-semibold text-primary">ENCODER–DECODER</p>
             <h3 className="mt-2 text-base font-semibold text-ink">Biến đổi chuỗi</h3>
-            <p className="mt-2 text-sm leading-6">Cross-attention nối source với target. Phù hợp dịch, tóm tắt và speech-to-text.</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Cross-attention nối source với target; phù hợp dịch, tóm tắt và speech-to-text.</p>
           </div>
         </div>
-      </ArticleSection>
-
-      <ArticleSection id="training-va-generation" number="8" title="Training song song, generation tuần tự">
         <p>
-          Khi training decoder, teacher forcing cung cấp toàn bộ target đã dịch phải một vị trí. Causal mask bảo đảm token
-          không nhìn đáp án tương lai, nhưng GPU vẫn tính các vị trí cùng lúc. Khi inference, token kế tiếp chưa tồn tại nên
-          model phải sinh tuần tự.
-        </p>
-        <p>
-          KV cache lưu Key và Value của token cũ để mỗi bước không tính lại toàn bộ prefix. Cache giúp generation nhanh hơn
-          nhưng tiêu thụ memory theo số layer, số token, số KV head và head dimension.
+          Paper gốc thuộc họ encoder–decoder. Việc dùng từ “Transformer” cho mọi model chỉ có encoder hoặc decoder là sự
+          phát triển sau đó của cùng bộ building block.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="transformer-pytorch" number="9" title="Một Transformer encoder bằng PyTorch">
+      <ArticleSection id="training-generation" number="10" title="Training song song nhưng generation vẫn tuần tự">
         <p>
-          Ví dụ này giả sử token đã được embedding và cộng positional information. Padding mask đánh dấu vị trí không nên
-          tham gia attention.
+          Khi train decoder, toàn bộ target đã shift được đưa vào cùng lúc. Causal mask ngăn leakage nhưng GPU vẫn tính
+          representation của nhiều vị trí song song. Khi inference, token tiếp theo chưa tồn tại nên model phải sinh từng
+          bước.
+        </p>
+        <p>
+          KV cache lưu Key và Value của prefix ở mỗi layer để không tính lại chúng ở bước sau. Cache giảm compute lặp lại
+          nhưng memory tăng theo số token, layer, KV head và head dimension. Đây là tối ưu inference hiện đại, không phải
+          thành phần được mô tả trong sơ đồ paper 2017.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="training-recipe" number="11" title="Paper gốc train model như thế nào?">
+        <p>
+          Kiến trúc và training recipe đi cùng nhau. Transformer base được train 100.000 step trong khoảng 12 giờ trên 8
+          GPU P100; bản big train 300.000 step trong 3,5 ngày. Các chi tiết chính gồm:
+        </p>
+        <div className="my-6 grid gap-px border border-border bg-border sm:grid-cols-2">
+          {[
+            ['Optimizer', 'Adam · β₁=0.9 · β₂=0.98 · ε=10⁻⁹'],
+            ['Learning rate', 'Warmup 4.000 step rồi giảm theo inverse square root'],
+            ['Regularization', 'Dropout 0.1 ở base model'],
+            ['Target', 'Label smoothing ε=0.1'],
+          ].map(([name, value]) => (
+            <div key={name} className="bg-card p-5">
+              <p className="font-mono text-xs font-semibold text-primary">{name}</p>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{value}</p>
+            </div>
+          ))}
+        </div>
+        <p>
+          Trên WMT 2014 English–German, Transformer big đạt 28.4 BLEU trong báo cáo của paper. Con số lịch sử này chỉ có ý
+          nghĩa khi đi kèm dataset, preprocessing, beam search và setup training cụ thể.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="chi-phi-context-dai" number="12" title="Context dài làm attention trở thành bottleneck">
+        <p>
+          Full attention có complexity <code className="inline-code">O(T²·D)</code> và score tensor
+          <code className="inline-code">[B,H,T,T]</code>. Khi T tăng gấp đôi, số cặp query–key tăng gần bốn lần.
+        </p>
+        <p>
+          FlashAttention tối ưu exact attention bằng tiling và giảm traffic giữa các tầng memory GPU. Local, sliding-window
+          và sparse attention lại giảm số kết nối cần xét. Hai hướng giải quyết khác nhau: một hướng giữ nguyên phép tính
+          nhưng chạy hiệu quả hơn; hướng kia thay pattern kết nối để hạ complexity.
+        </p>
+      </ArticleSection>
+
+      <ArticleSection id="pytorch" number="13" title="Dựng encoder gần với paper bằng PyTorch">
+        <p>
+          <code className="inline-code">norm_first=False</code> giữ thứ tự post-norm của kiến trúc gốc. Nếu đổi sang True,
+          ta đang dùng pre-norm. Padding mask đánh dấu token đệm không được tham gia attention.
         </p>
         <pre className="my-5 overflow-x-auto border border-code-border bg-code p-4 font-mono text-sm leading-7 text-code-foreground">
           <code>{encoderCode}</code>
         </pre>
         <p>
-          Điều kiện quan trọng là <code className="inline-code">d_model</code> chia hết cho <code className="inline-code">nhead</code>.
-          Output giữ nguyên T và D; muốn classification toàn chuỗi, mình cần pooling, CLS token hoặc một head lấy representation phù hợp.
+          Output giữ shape [B,T,D]. Bài toán classification cần thêm pooling hoặc một token đại diện; decoder sinh token
+          cần thêm output projection sang vocabulary và chiến lược decoding.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="trade-off" number="10" title="Điểm mạnh và giới hạn">
+      <ArticleSection id="ghi-nho-transformer" number="14" title="Cách mình đọc một Transformer mới">
         <p>
-          Transformer kết nối dependency xa trực tiếp, scale tốt với dữ liệu và compute, đồng thời dùng chung khung cho text,
-          ảnh, âm thanh và multimodal. Nhưng model lớn cần nhiều dữ liệu, attention dài tốn memory và generation vẫn chịu độ
-          trễ tuần tự theo số token output.
+          Mình không bắt đầu bằng tên model. Mình kiểm tra sáu câu hỏi: token được biểu diễn và gắn vị trí thế nào; attention
+          pattern là full hay restricted; dùng self hay cross-attention; norm đặt trước hay sau sublayer; FFN mở rộng bao
+          nhiêu; training và inference có mask/cache gì.
         </p>
         <p>
-          Cách mình ghi nhớ: attention là phép trao đổi thông tin; Transformer là hệ thống đóng gói phép trao đổi đó cùng
-          FFN, residual và normalization thành block có thể lặp sâu. Hiểu từng block giúp mình đọc kiến trúc model mới mà
-          không xem nó như một hộp đen duy nhất.
+          Khi sáu mảnh này rõ, encoder-only, decoder-only, multimodal Transformer hay một LLM lớn không còn là hộp đen hoàn
+          toàn. Chúng là các cách sắp xếp và scale cùng một nhóm building block.
         </p>
       </ArticleSection>
 
-      <ArticleSection id="tai-lieu" number="11" title="Đọc thêm">
+      <ArticleSection id="tai-lieu" number="15" title="Nguồn tham khảo">
         <ul className="space-y-3">
           <ReferenceLink href="https://arxiv.org/abs/1706.03762" label="Vaswani et al. — Attention Is All You Need" />
+          <ReferenceLink href="https://research.google/pubs/attention-is-all-you-need/" label="Google Research — Attention Is All You Need" />
+          <ReferenceLink href="https://research.google/blog/transformer-a-novel-neural-network-architecture-for-language-understanding/" label="Google Research Blog — Transformer architecture" />
+          <ReferenceLink href="https://docs.pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html" label="PyTorch — TransformerEncoderLayer" />
+          <ReferenceLink href="https://research.google/pubs/attention-is-not-all-you-need-pure-attention-loses-rank-doubly-exponentially-with-depth/" label="Dong, Cordonnier & Loukas — Attention is Not All You Need" />
         </ul>
       </ArticleSection>
     </ArticleShell>

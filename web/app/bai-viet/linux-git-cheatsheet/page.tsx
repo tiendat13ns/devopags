@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ArticleToc } from '@/components/article-shell';
+import { ArticleLayout } from '@/components/article-layout';
 import { SocialLinks } from '@/components/social-links';
 import {
   ChevronRight,
@@ -293,12 +294,8 @@ export default function LinuxGitCheatsheet() {
     <main className="article-reading-bg min-h-screen text-foreground transition-colors duration-300">
       <SiteHeader />
 
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
-        <aside className="hidden lg:block">
-          <ArticleToc currentHref="/bai-viet/linux-git-cheatsheet" />
-        </aside>
+      <ArticleLayout topics={<ArticleToc currentHref="/bai-viet/linux-git-cheatsheet" />}>
 
-        <article className="min-w-0">
           <div className="mb-10 rounded-2xl border border-primary/15 bg-primary-soft p-5 sm:p-6">
             <div className="flex gap-3">
               <Info className="mt-0.5 shrink-0 text-primary" size={20} />
@@ -414,9 +411,7 @@ git push -u origin docs/linux-cheatsheet`}</code></pre>
               <ReferenceLink href="https://git-scm.com/cheat-sheet.pdf" label="Git Cheat Sheet — bản tóm tắt chính thức" />
             </ul>
           </section>
-        </article>
-
-      </div>
+      </ArticleLayout>
 
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">

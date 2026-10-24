@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ExternalLink, GitFork, Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SocialLinks } from '@/components/social-links';
+import { ArticleLayout } from '@/components/article-layout';
+import { findTopic } from '@/lib/topics';
 
 type TopicItem = {
   href: string;
@@ -11,12 +13,15 @@ type TopicItem = {
 
 type TopicGroup = {
   label: string;
+  // Slug của chủ đề trong lib/topics: quyết định theme của bài và nhóm nào hiện ở mục lục.
+  topic: string;
   items: TopicItem[];
 };
 
 const articleTopics: TopicGroup[] = [
   {
     label: 'Linux',
+    topic: 'devops',
     items: [
       { href: '/bai-viet/tu-duy-trien-khai-du-an', label: 'Tư duy triển khai dự án cho DevOps' },
       { href: '/bai-viet/linux-la-gi', label: 'Linux là gì?' },
@@ -25,60 +30,100 @@ const articleTopics: TopicGroup[] = [
   },
   {
     label: 'Git',
+    topic: 'devops',
     items: [
       { href: '/bai-viet/linux-git-cheatsheet', label: 'Linux & Git Cheatsheet' },
     ],
   },
   {
     label: 'Docker',
+    topic: 'devops',
     items: [
       { href: '/bai-viet/docker-la-gi', label: 'Docker là gì và tại sao nên dùng?' },
     ],
   },
   {
-    label: 'Machine Learning',
+    label: 'Network',
+    topic: 'network',
     items: [
-      { href: '/bai-viet/nhap-mon-machine-learning-va-knn', label: 'Nhập môn Machine Learning với KNN' },
-      { href: '/bai-viet/decision-tree-va-bias-variance', label: 'Decision Tree và bias–variance' },
+      { href: '/bai-viet/network-la-gi-osi-tcp-ip', label: 'Network là gì? OSI và TCP/IP' },
+      { href: '/bai-viet/ip-subnet-cidr', label: 'IP, Subnet và CIDR' },
+      { href: '/bai-viet/mac-arp-switch-router', label: 'MAC, ARP, Switch và Router' },
+      { href: '/bai-viet/tcp-va-udp', label: 'TCP và UDP' },
+      { href: '/bai-viet/dns-hoat-dong-the-nao', label: 'DNS' },
+      { href: '/bai-viet/http-https-tls', label: 'HTTP, HTTPS và TLS' },
+      { href: '/bai-viet/dhcp-nat-port-forwarding', label: 'DHCP, NAT và Port Forwarding' },
+      { href: '/bai-viet/firewall-co-ban', label: 'Firewall cơ bản' },
+      { href: '/bai-viet/reverse-proxy-load-balancer', label: 'Reverse Proxy và Load Balancer' },
+      { href: '/bai-viet/ssh-tunnel-vpn', label: 'SSH, Tunnel và VPN' },
     ],
   },
   {
-    label: 'AI / Deep Learning',
+    label: 'Cloud',
+    topic: 'cloud',
+    items: [
+      { href: '/bai-viet/cloud-computing-va-aws', label: 'Cloud computing và AWS' },
+      { href: '/bai-viet/aws-iam-user-role-policy', label: 'IAM: user, role và policy' },
+      { href: '/bai-viet/aws-vpc-public-private-subnet', label: 'VPC: subnet public, private và demo' },
+      { href: '/bai-viet/aws-ec2-ebs', label: 'EC2 và EBS' },
+      { href: '/bai-viet/aws-elb-auto-scaling', label: 'Load Balancer và Auto Scaling' },
+      { href: '/bai-viet/aws-s3-luu-tru-object', label: 'S3: lưu trữ object' },
+      { href: '/bai-viet/aws-rds-co-so-du-lieu', label: 'RDS: database được quản lý' },
+      { href: '/bai-viet/terraform-iac-aws', label: 'Terraform: hạ tầng bằng code' },
+    ],
+  },
+  {
+    label: 'Machine Learning',
+    topic: 'machine-learning',
+    items: [
+      { href: '/bai-viet/nhap-mon-machine-learning-va-knn', label: 'Nhập môn Machine Learning với KNN' },
+      { href: '/bai-viet/decision-tree-va-bias-variance', label: 'Decision Tree và bias–variance' },
+      { href: '/bai-viet/danh-gia-model-loss-accuracy-precision-recall-f1', label: 'Đọc loss và các metric' },
+    ],
+  },
+  {
+    label: 'Deep Learning',
+    topic: 'deep-learning',
     items: [
       { href: '/bai-viet/deep-learning-la-gi', label: 'Deep Learning' },
       { href: '/bai-viet/du-lieu-vao-mang-vector-tensor-token-embedding-graph', label: 'Dữ liệu đi vào mạng dưới dạng gì?' },
-      { href: '/bai-viet/kien-truc-mlp-la-gi', label: 'Kiến trúc MLP' },
       { href: '/bai-viet/ham-kich-hoat-la-gi', label: 'Hàm kích hoạt' },
+    ],
+  },
+  {
+    label: 'AI',
+    topic: 'ai',
+    items: [
+      { href: '/bai-viet/kien-truc-mlp-la-gi', label: 'Kiến trúc MLP' },
       { href: '/bai-viet/kien-truc-cnn-la-gi', label: 'Kiến trúc CNN' },
       { href: '/bai-viet/kien-truc-rnn-la-gi', label: 'Kiến trúc RNN' },
       { href: '/bai-viet/so-sanh-rnn-lstm-gru', label: 'So sánh RNN, LSTM và GRU' },
       { href: '/bai-viet/co-che-attention', label: 'Cơ chế Attention' },
       { href: '/bai-viet/kien-truc-transformer', label: 'Kiến trúc Transformer' },
-      { href: '/bai-viet/danh-gia-model-loss-accuracy-precision-recall-f1', label: 'Đọc loss và các metric' },
     ],
   },
 ];
 
+function currentTopic(href: string) {
+  return articleTopics.find((group) => group.items.some((item) => item.href === href))?.topic;
+}
+
 export function ArticleShell({
   children,
   currentHref,
-  theme = 'default',
+  theme,
 }: {
   children: ReactNode;
   currentHref: string;
-  theme?: 'default' | 'docker';
+  theme?: 'docker';
 }) {
+  const themeClass = theme === 'docker' ? 'docker-article-theme' : findTopic(currentTopic(currentHref) ?? '')?.themeClass ?? '';
+
   return (
-    <main className={`article-reading-bg min-h-screen text-foreground transition-colors duration-300 ${theme === 'docker' ? 'docker-article-theme' : ''}`}>
+    <main className={`article-reading-bg min-h-screen text-foreground transition-colors duration-300 ${themeClass}`}>
       <ArticleHeader />
 
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[230px_minmax(0,820px)] lg:justify-center lg:py-14">
-        <aside className="hidden lg:block">
-          <ArticleToc currentHref={currentHref} />
-        </aside>
-
-        <article className="min-w-0">{children}</article>
-      </div>
+      <ArticleLayout topics={<ArticleToc currentHref={currentHref} />}>{children}</ArticleLayout>
 
       <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
@@ -94,19 +139,26 @@ export function ArticleShell({
 }
 
 export function ArticleToc({ currentHref }: { currentHref: string }) {
+  const topic = findTopic(currentTopic(currentHref) ?? '');
+  const groups = articleTopics.filter((group) => group.topic === topic?.slug);
+
   return (
-    <nav className="article-toc sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border border-border bg-card/55 p-5 backdrop-blur-sm" aria-label="Bài viết theo chủ đề">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-primary">Bài viết theo chủ đề</p>
+    <nav className="article-toc sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border border-border bg-card/55 p-5 backdrop-blur-sm" aria-label={`Bài viết chủ đề ${topic?.label ?? ''}`}>
+      <Link className="font-mono text-xs font-semibold uppercase tracking-[0.08em] text-primary no-underline! hover:text-primary-dark" href={topic ? `/tai-lieu/${topic.slug}` : '/tai-lieu'}>
+        {topic ? `Chủ đề ${topic.label}` : 'Tài liệu'}
+      </Link>
       <div className="mt-4 space-y-6">
-        {articleTopics.map((topic) => (
-          <section key={topic.label}>
-            <h2 className="text-[0.72rem] font-semibold uppercase leading-5 tracking-[0.08em] text-primary/75">{topic.label}</h2>
+        {groups.map((group) => (
+          <section key={group.label}>
+            {groups.length > 1 ? (
+              <h2 className="text-[0.72rem] font-semibold uppercase leading-5 tracking-[0.08em] text-primary/75">{group.label}</h2>
+            ) : null}
             <ul className="mt-2 space-y-1">
-              {topic.items.map((item) => {
+              {group.items.map((item) => {
                 const isActive = item.href === currentHref;
 
                 return (
-                  <li key={`${topic.label}-${item.href}`}>
+                  <li key={`${group.label}-${item.href}`}>
                     <Link
                       className={`block border-l-2 py-1.5 pl-3 text-sm font-semibold leading-5 transition-colors ${isActive ? 'border-primary bg-primary-soft text-primary' : 'border-transparent text-ink hover:border-primary/45 hover:text-primary'}`}
                       href={item.href}

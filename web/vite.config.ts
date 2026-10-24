@@ -14,6 +14,8 @@ const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
+  // Must not exceed the newest date the pinned wrangler/workerd supports.
+  compatibility_date: '2026-05-22',
   compatibility_flags: ['nodejs_compat'],
   d1_databases: d1
     ? [

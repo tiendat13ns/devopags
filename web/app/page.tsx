@@ -4,8 +4,171 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { PaginatedPostList, type Post } from '@/components/post-list';
 import { SocialLinks } from '@/components/social-links';
 import { AnimatedTerminal } from '@/components/animated-terminal';
+import { GithubContributions } from '@/components/github-contributions';
 
 const documentPosts: Post[] = [
+  {
+    title: 'Terraform: viết lại hạ tầng AWS bằng code',
+    description: 'Infrastructure as Code, provider, resource, state; viết lại VPC public/private của series bằng Terraform, đọc plan, remote state trên S3 và drift.',
+    date: '25/10/2026',
+    readTime: '19 phút đọc',
+    tags: ['Cloud', 'AWS', 'Terraform', 'IaC'],
+    href: '/bai-viet/terraform-iac-aws',
+    accent: 'amethyst',
+  },
+  {
+    title: 'RDS: database được quản lý trên AWS',
+    description: 'RDS so với tự cài trên EC2, DB subnet group, Multi-AZ và read replica, backup và point-in-time restore, Secrets Manager, demo PostgreSQL qua SSH tunnel.',
+    date: '25/10/2026',
+    readTime: '16 phút đọc',
+    tags: ['Cloud', 'AWS', 'RDS', 'Database'],
+    href: '/bai-viet/aws-rds-co-so-du-lieu',
+    accent: 'amethyst',
+  },
+  {
+    title: 'S3: lưu trữ object, quyền truy cập và chi phí',
+    description: 'Bucket, key và prefix, storage class và lifecycle, Block Public Access, bucket policy, presigned URL, versioning và mã hóa.',
+    date: '25/10/2026',
+    readTime: '16 phút đọc',
+    tags: ['Cloud', 'AWS', 'S3', 'Storage'],
+    href: '/bai-viet/aws-s3-luu-tru-object',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Load Balancer và Auto Scaling: chịu tải và tự hồi phục',
+    description: 'ALB, NLB và GWLB, target group và health check, launch template, scaling policy, mô phỏng target tracking và demo ALB + ASG.',
+    date: '25/10/2026',
+    readTime: '18 phút đọc',
+    tags: ['Cloud', 'AWS', 'ELB', 'Auto Scaling'],
+    href: '/bai-viet/aws-elb-auto-scaling',
+    accent: 'amethyst',
+  },
+  {
+    title: 'EC2 và EBS: máy ảo và ổ đĩa trên AWS',
+    description: 'Vòng đời instance, cách đọc tên instance type, AMI, user data, IMDSv2, EBS so với instance store và EFS, On-Demand, Savings Plans và Spot.',
+    date: '25/10/2026',
+    readTime: '17 phút đọc',
+    tags: ['Cloud', 'AWS', 'EC2', 'EBS'],
+    href: '/bai-viet/aws-ec2-ebs',
+    accent: 'amethyst',
+  },
+  {
+    title: 'IAM: ai được làm gì trên tài khoản AWS',
+    description: 'User, group, role, cấu trúc policy JSON, cách AWS đánh giá allow và deny, credential tạm thời cho EC2 và least privilege.',
+    date: '25/10/2026',
+    readTime: '18 phút đọc',
+    tags: ['Cloud', 'AWS', 'IAM', 'Security'],
+    href: '/bai-viet/aws-iam-user-role-policy',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Cloud computing và AWS: bắt đầu từ đâu?',
+    description: 'IaaS, PaaS, SaaS và serverless, Region và Availability Zone, mô hình trách nhiệm chia sẻ và thiết lập tài khoản AWS an toàn.',
+    date: '25/10/2026',
+    readTime: '14 phút đọc',
+    tags: ['Cloud', 'AWS', 'Cơ bản'],
+    href: '/bai-viet/cloud-computing-va-aws',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Cloud Networking trên AWS: VPC, subnet public/private và demo kiểm tra kết nối',
+    description: 'Virtual network là gì, VPC, subnet, route table, Internet Gateway, NAT Gateway, Security Group và NACL; so sánh với Azure VNet và demo dựng mạng bằng AWS CLI.',
+    date: '24/10/2026',
+    readTime: '20 phút đọc',
+    tags: ['Cloud', 'AWS', 'VPC', 'Networking'],
+    href: '/bai-viet/aws-vpc-public-private-subnet',
+    accent: 'amethyst',
+  },
+  {
+    title: 'SSH, Tunnel và VPN: đi vào mạng nội bộ một cách an toàn',
+    description: 'SSH key, ~/.ssh/config, local/remote/dynamic forwarding, ProxyJump, bastion host, so sánh với VPN và WireGuard cơ bản.',
+    date: '22/10/2026',
+    readTime: '19 phút đọc',
+    tags: ['Network', 'SSH', 'Tunnel', 'VPN'],
+    href: '/bai-viet/ssh-tunnel-vpn',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Reverse Proxy và Load Balancer: một cửa vào, nhiều server phía sau',
+    description: 'Forward và reverse proxy, Nginx tối thiểu, round robin, least connections, IP hash, L4 và L7, health check và lỗi 502/504.',
+    date: '22/10/2026',
+    readTime: '18 phút đọc',
+    tags: ['Network', 'Nginx', 'Load Balancer', 'Reverse Proxy'],
+    href: '/bai-viet/reverse-proxy-load-balancer',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Firewall cơ bản: luật nào khớp trước thì thắng',
+    description: 'Cách firewall lọc gói tin, thứ tự luật, stateful và stateless, ufw, firewalld, iptables và Security Group so với NACL.',
+    date: '22/10/2026',
+    readTime: '17 phút đọc',
+    tags: ['Network', 'Firewall', 'Security'],
+    href: '/bai-viet/firewall-co-ban',
+    accent: 'amethyst',
+  },
+  {
+    title: 'DHCP, NAT và Port Forwarding: vì sao máy trong nhà ra được Internet?',
+    description: 'IP đến từ đâu (DHCP), vì sao nhiều máy dùng chung một IP public (NAT/PAT), cách mở port ra ngoài và NAT trên cloud.',
+    date: '22/10/2026',
+    readTime: '16 phút đọc',
+    tags: ['Network', 'DHCP', 'NAT', 'Port Forwarding'],
+    href: '/bai-viet/dhcp-nat-port-forwarding',
+    accent: 'amethyst',
+  },
+  {
+    title: 'HTTP, HTTPS và TLS: đọc được một request thay vì đoán',
+    description: 'Giải phẫu request và response, status code (502, 503, 504), TLS handshake, chuỗi chứng chỉ, curl -v và openssl s_client.',
+    date: '22/10/2026',
+    readTime: '18 phút đọc',
+    tags: ['Network', 'HTTP', 'TLS', 'curl'],
+    href: '/bai-viet/http-https-tls',
+    accent: 'amethyst',
+  },
+  {
+    title: 'DNS hoạt động thế nào? Lần theo một câu hỏi từ máy bạn đến root server',
+    description: 'Phân cấp DNS, cách resolver tìm bản ghi, các loại record, TTL, cách đọc dig và gỡ các lỗi DNS thường gặp.',
+    date: '22/10/2026',
+    readTime: '17 phút đọc',
+    tags: ['Network', 'DNS', 'dig'],
+    href: '/bai-viet/dns-hoat-dong-the-nao',
+    accent: 'amethyst',
+  },
+  {
+    title: 'TCP và UDP: bắt tay ba bước, port và trạng thái trong ss',
+    description: 'Port và socket, so sánh TCP với UDP, bắt tay ba bước, truyền lại gói bị mất, đọc ss và phân biệt connection refused với timeout.',
+    date: '22/10/2026',
+    readTime: '17 phút đọc',
+    tags: ['Network', 'TCP', 'UDP', 'Port'],
+    href: '/bai-viet/tcp-va-udp',
+    accent: 'amethyst',
+  },
+  {
+    title: 'MAC, ARP, Switch và Router: gói tin đi qua LAN như thế nào?',
+    description: 'Phân biệt MAC và IP, hiểu ARP, switch học MAC, router định tuyến qua mô phỏng gói tin từng chặng và cách đọc ip neigh, ip route.',
+    date: '22/10/2026',
+    readTime: '15 phút đọc',
+    tags: ['Network', 'MAC', 'ARP', 'Routing'],
+    href: '/bai-viet/mac-arp-switch-router',
+    accent: 'amethyst',
+  },
+  {
+    title: 'IP, Subnet và CIDR: đọc 192.168.1.0/24 trong 30 giây',
+    description: 'Địa chỉ IPv4 dưới dạng 32 bit, subnet mask, CIDR, dải private/public và cách chia subnet qua một công cụ tính trực tiếp.',
+    date: '22/10/2026',
+    readTime: '16 phút đọc',
+    tags: ['Network', 'IPv4', 'CIDR', 'Subnet'],
+    href: '/bai-viet/ip-subnet-cidr',
+    accent: 'amethyst',
+  },
+  {
+    title: 'Network là gì? Hành trình của một request qua OSI và TCP/IP',
+    description: 'Lần theo một lệnh curl để hiểu DNS, TCP, TLS, HTTP, cách dữ liệu được đóng gói qua các tầng và dùng mô hình tầng để debug.',
+    date: '22/10/2026',
+    readTime: '14 phút đọc',
+    tags: ['Network', 'OSI', 'TCP/IP', 'Cơ bản'],
+    href: '/bai-viet/network-la-gi-osi-tcp-ip',
+    accent: 'amethyst',
+  },
   {
     title: 'Nhập môn Machine Learning với KNN',
     description: 'Từ input, feature, label, loss và generalisation đến KNN, distance metric, scaling, validation và giới hạn của dữ liệu nhiều chiều.',
@@ -180,6 +343,8 @@ export default function Home() {
           <LinuxPlaygroundPreview />
         </section>
 
+        <GithubContributions />
+
         <div className="grid gap-12 pb-16 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-20 lg:pb-24">
           <section id="bai-viet" className="space-y-10" aria-label="Bài viết mới">
             <div aria-labelledby="documents-title">
@@ -226,6 +391,7 @@ export default function Home() {
                 <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Linux</a>
                 <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Git</a>
                 <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Docker</a>
+                <a className="border border-border bg-card/70 px-3 py-1.5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-ink" href="#bai-viet">Network</a>
               </div>
             </section>
 
